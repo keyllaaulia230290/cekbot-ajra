@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>AJRA Admin</title>
+
+<link
+rel="stylesheet"
+href="admin.css">
+
+</head>
+<body>
+
+<div class="container">
+
+<div id="loginBox"
+class="glass">
+
+<div class="logo">
+⚔️
+</div>
+
+<h1>AJRA ADMIN</h1>
+
+<p class="sub">
+Admin Login
+</p>
+
+<input
+type="text"
+id="username"
+placeholder="Email">
+
+<input
+type="password"
+id="password"
+placeholder="Password">
+
+<button id="loginBtn">
+LOGIN
+</button>
+
+</div>
+
+<div id="dashboard"
+class="hidden">
+
+<div class="topbar">
+
+<h1>
+⚔️ AJRA DASHBOARD
+</h1>
+
+<button id="logoutBtn"
+class="logout">
+Logout
+</button>
+
+</div>
+
+<div class="glass form-card">
+
+<input
+type="text"
+id="customer"
+placeholder="Customer">
+
+<input
+type="text"
+id="botUsername"
+placeholder="Username Bot">
+
+<input
+type="text"
+id="iggid"
+placeholder="IGG ID">
+
+<input
+type="text"
+id="server"
+placeholder="Server">
+
+<input
+type="text"
+id="expired"
+placeholder="Expired">
+
+<select id="status">
+<option>AKTIF</option>
+<option>NONAKTIF</option>
+</select>
+
+<button id="saveBtn">
+Tambah Data
+</button>
+
+</div>
+
+<h2 class="list-title">
+Bot List
+</h2>
+
+<div id="botList">
+</div>
+
+</div>
+
+</div>
+
+<script
+type="module"
+src="admin.js">
+</script>
+
+</body>
+</html>

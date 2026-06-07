@@ -25,190 +25,241 @@ document.getElementById(
 "loading"
 );
 
-async function findBot() {
+const promoModal =
+document.getElementById(
+"promoModal"
+);
 
-  const keyword =
-  input.value
-  .trim()
-  .toLowerCase();
+const closePromo =
+document.getElementById(
+"closePromo"
+);
 
-  if(!keyword){
-    alert(
-      "Masukkan Username atau IGG ID"
-    );
-    return;
-  }
+// CLOSE PROMO
+if(closePromo){
 
-  loading.classList.remove(
-    "hidden"
-  );
+closePromo.addEventListener(
+"click",
+()=>{
 
-  result.innerHTML = "";
+promoModal.classList.add(
+"hidden"
+);
 
-  try {
+});
 
-    const snapshot =
-    await get(
-      child(
-        ref(db),
-        "bots"
-      )
-    );
+}
 
-    loading.classList.add(
-      "hidden"
-    );
+async function findBot(){
 
-    if(!snapshot.exists()){
+const keyword =
+input.value
+.trim()
+.toLowerCase();
 
-      result.innerHTML = `
-      <div class="notfound">
-      ❌ Database kosong
-      </div>
-      `;
+if(!keyword){
 
-      return;
-    }
+alert(
+"Masukkan Username / IGG ID"
+);
 
-    const data =
-    snapshot.val();
+return;
 
-    let found = null;
+}
 
-    Object.keys(data)
-    .forEach(key => {
+// RESET RESULT
+result.innerHTML = "";
 
-      const bot =
-      data[key];
+// SHOW LOADING
+loading.classList.remove(
+"hidden"
+);
 
-      const username =
-      bot.username
-      ?.toLowerCase();
+try{
 
-      const iggid =
-      bot.iggid
-      ?.toString()
-      .toLowerCase();
+const snapshot =
+await get(
+child(
+ref(db),
+"bots"
+)
+);
 
-      if(
-        username === keyword ||
-        iggid === keyword
-      ){
-        found = bot;
-      }
+loading.classList.add(
+"hidden"
+);
 
-    });
+if(
+!snapshot.exists()
+){
 
-    if(found){
+result.innerHTML = `
+<div class="notfound">
+❌ Database kosong
+</div>
+`;
 
-      const isActive =
-      found.status
-      ?.toLowerCase()
-      === "aktif";
+return;
 
-      result.innerHTML = `
+}
 
-      <div class="card">
+const data =
+snapshot.val();
 
-        <div class="card-title">
-          ⚔️ BOT DATA FOUND
-        </div>
+let found = null;
 
-        <div class="row">
-          <span class="label">
-          👤 Customer
-          </span>
+// LOOP DATA
+Object.keys(data)
+.forEach(key=>{
 
-          <span>
-          ${found.customer}
-          </span>
-        </div>
+const bot =
+data[key];
 
-        <div class="row">
-          <span class="label">
-          🤖 Username
-          </span>
+if(
 
-          <span>
-          ${found.username}
-          </span>
-        </div>
+bot.username
+?.toLowerCase()
+=== keyword ||
 
-        <div class="row">
-          <span class="label">
-          🆔 IGG ID
-          </span>
+bot.iggid
+?.toString()
+.toLowerCase()
+=== keyword
 
-          <span>
-          ${found.iggid}
-          </span>
-        </div>
+){
 
-        <div class="row">
-          <span class="label">
-          🖥️ Server
-          </span>
+found = bot;
 
-          <span>
-          ${found.server}
-          </span>
-        </div>
+}
 
-        <div class="row">
-          <span class="label">
-          📅 Expired
-          </span>
+});
 
-          <span>
-          ${found.expired}
-          </span>
-        </div>
+// SHOW BOT
+if(found){
 
-        <div class="row">
-          <span class="label">
-          📊 Status
-          </span>
+const isActive =
+found.status
+?.toLowerCase()
+=== "aktif";
 
-          <span class="
-          status
-          ${isActive
-            ? "active"
-            : "inactive"
-          }">
+// PROMO MUNCUL
+if(promoModal){
 
-          ${found.status}
+promoModal.classList.remove(
+"hidden"
+);
 
-          </span>
-        </div>
+setTimeout(()=>{
 
-      </div>
-      `;
+promoModal.classList.add(
+"hidden"
+);
 
-    } else {
+},5000);
 
-      result.innerHTML = `
-      <div class="notfound">
-      ❌ Data bot tidak ditemukan
-      </div>
-      `;
+}
 
-    }
+result.innerHTML = `
+<div class="card">
 
-  } catch(err){
+<div class="card-title">
+⚔️ BOT DATA FOUND
+</div>
 
-    console.log(err);
+<div class="row">
+<span class="label">
+👤 Customer
+</span>
 
-    loading.classList.add(
-      "hidden"
-    );
+<span>
+${found.customer}
+</span>
+</div>
 
-    result.innerHTML = `
-    <div class="notfound">
-    ❌ Error mengambil data
-    </div>
-    `;
+<div class="row">
+<span class="label">
+🤖 Username
+</span>
 
-  }
+<span>
+${found.username}
+</span>
+</div>
+
+<div class="row">
+<span class="label">
+🆔 IGG ID
+</span>
+
+<span>
+${found.iggid}
+</span>
+</div>
+
+<div class="row">
+<span class="label">
+🖥️ Server
+</span>
+
+<span>
+${found.server}
+</span>
+</div>
+
+<div class="row">
+<span class="label">
+📅 Expired
+</span>
+
+<span>
+${found.expired}
+</span>
+</div>
+
+<div class="row">
+<span class="label">
+📊 Status
+</span>
+
+<span class="
+status
+${isActive
+? "active"
+: "inactive"
+}">
+${found.status}
+</span>
+
+</div>
+
+</div>
+`;
+
+}else{
+
+result.innerHTML = `
+<div class="notfound">
+❌ Data bot tidak ditemukan
+</div>
+`;
+
+}
+
+}catch(err){
+
+console.error(err);
+
+loading.classList.add(
+"hidden"
+);
+
+result.innerHTML = `
+<div class="notfound">
+❌ Error mengambil data
+</div>
+`;
+
+}
 
 }
 
@@ -221,10 +272,12 @@ input.addEventListener(
 "keypress",
 (e)=>{
 
-  if(
-    e.key === "Enter"
-  ){
-    findBot();
-  }
+if(
+e.key === "Enter"
+){
+
+findBot();
+
+}
 
 });

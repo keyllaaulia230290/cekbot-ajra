@@ -238,7 +238,30 @@ clearForm();
 });
 
 // LOAD BOTS
+let currentPage = 1;
+const itemsPerPage = 10;
+
 function loadBots(){
+
+const searchInput =
+document.getElementById(
+"searchBot"
+);
+
+const prevBtn =
+document.getElementById(
+"prevPage"
+);
+
+const nextBtn =
+document.getElementById(
+"nextPage"
+);
+
+const pageInfo =
+document.getElementById(
+"pageInfo"
+);
 
 onValue(
 ref(db,"bots"),
@@ -246,18 +269,76 @@ ref(db,"bots"),
 
 botList.innerHTML = "";
 
-if(snapshot.exists()){
+if(!snapshot.exists())
+return;
 
 const data =
 snapshot.val();
 
-Object.keys(data)
-.forEach(key=>{
+let bots =
+Object.keys(data).map(key=>({
+id:key,
+...data[key]
+}));
 
-const bot =
-data[key];
+// SEARCH
+const keyword =
+searchInput.value
+.toLowerCase();
 
-const statusClass =
+if(keyword){
+
+bots = bots.filter(bot=>
+
+bot.username
+?.toLowerCase()
+.includes(keyword)
+
+||
+
+bot.customer
+?.toLowerCase()
+.includes(keyword)
+
+||
+
+bot.iggid
+?.toString()
+.includes(keyword)
+
+);
+
+}
+
+// PAGINATION
+const totalPages =
+Math.ceil(
+bots.length /
+itemsPerPage
+);
+
+const start =
+(currentPage - 1)
+*
+itemsPerPage;
+
+const end =
+start +
+itemsPerPage;
+
+const currentBots =
+bots.slice(
+start,
+end
+);
+
+pageInfo.innerText =
+`Page ${currentPage} of ${totalPages || 1}`;
+
+// RENDER
+currentBots.forEach(bot=>{
+
+const statusColor =
 bot.status
 .toLowerCase()
 ===
@@ -294,11 +375,9 @@ ${bot.username}
 <div
 class="bot-info"
 style="
-color:
-${statusClass};
+color:${statusColor};
 font-weight:bold;
-"
->
+">
 📊 ${bot.status}
 </div>
 
@@ -308,10 +387,9 @@ font-weight:bold;
 class="edit-btn"
 onclick="
 editBot(
-'${key}'
+'${bot.id}'
 )
-"
->
+">
 EDIT
 </button>
 
@@ -319,10 +397,9 @@ EDIT
 class="delete-btn"
 onclick="
 deleteBot(
-'${key}'
+'${bot.id}'
 )
-"
->
+">
 DELETE
 </button>
 
@@ -333,8 +410,42 @@ DELETE
 
 });
 
+// BUTTON PAGE
+prevBtn.onclick = ()=>{
+
+if(currentPage > 1){
+
+currentPage--;
+loadBots();
+
 }
 
+};
+
+nextBtn.onclick = ()=>{
+
+if(
+currentPage <
+totalPages
+){
+
+currentPage++;
+loadBots();
+
+}
+
+};
+
+searchInput.oninput = ()=>{
+
+currentPage = 1;
+loadBots();
+
+};
+
+},
+{
+onlyOnce:true
 }
 );
 

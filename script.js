@@ -67,10 +67,8 @@ return;
 
 }
 
-// RESET RESULT
 result.innerHTML = "";
 
-// SHOW LOADING
 loading.classList.remove(
 "hidden"
 );
@@ -134,7 +132,6 @@ found = bot;
 
 });
 
-// SHOW BOT
 if(found){
 
 const isActive =
@@ -142,7 +139,59 @@ found.status
 ?.toLowerCase()
 === "aktif";
 
-// PROMO MUNCUL
+// CEK EXPIRED
+let warningHtml = "";
+
+try{
+
+const today =
+new Date();
+
+const expDate =
+new Date(
+found.expired
+.split("/")
+.reverse()
+.join("-")
+);
+
+const diffDays =
+Math.ceil(
+(expDate - today) /
+(1000 * 60 * 60 * 24)
+);
+
+if(diffDays < 0){
+
+warningHtml = `
+<div class="expired-alert">
+🚨 BOT SUDAH EXPIRED
+<br>
+Silakan hubungi admin
+</div>
+`;
+
+}else if(diffDays <= 7){
+
+warningHtml = `
+<div class="warning-alert">
+⚠️ Masa aktif tersisa ${diffDays} hari
+<br>
+Segera lakukan perpanjangan
+</div>
+`;
+
+}
+
+}catch(err){
+
+console.log(
+"Gagal cek expired"
+);
+
+}
+
+// SHOW PROMO
 if(promoModal){
 
 promoModal.classList.remove(
@@ -160,6 +209,7 @@ promoModal.classList.add(
 }
 
 result.innerHTML = `
+
 <div class="card">
 
 <div class="card-title">
@@ -232,7 +282,10 @@ ${found.status}
 
 </div>
 
+${warningHtml}
+
 </div>
+
 `;
 
 }else{

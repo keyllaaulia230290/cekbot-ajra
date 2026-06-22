@@ -7,6 +7,7 @@ import {
   onValue,
   remove,
   update,
+  get,
   signInWithEmailAndPassword,
   signOut,
 } from "../firebase/config.js";
@@ -25,6 +26,15 @@ const claimList = document.getElementById("claimList");
 
 const botList = document.getElementById("botList");
 
+const orderList = document.getElementById("orderList");
+
+const orderFilter = document.getElementById("orderFilter");
+
+orderFilter.addEventListener(
+"change",
+loadOrders
+);
+
 let isEditing = false;
 let selectedBotId = null;
 
@@ -42,6 +52,8 @@ loginBtn.addEventListener("click", async () => {
     dashboard.classList.remove("hidden");
 
     loadBots();
+    loadOrders();
+    loadClaims();
   } catch {
     alert("Login gagal");
   }
@@ -393,6 +405,272 @@ Belum ada klaim
       });
   });
 }
+
+function loadOrders() {
+  onValue(ref(db, "orders"), (snapshot) => {
+    orderList.innerHTML = "";
+
+    if (!snapshot.exists()) {
+      orderList.innerHTML = `
+<div class="notfound">
+Belum ada pesanan
+</div>
+`;
+
+      return;
+    }
+
+    const orders = snapshot.val();
+
+    Object.keys(orders)
+      .reverse()
+      .forEach((key) => {
+        const order = orders[key];
+
+        const filter =
+orderFilter.value;
+
+if(
+
+filter !== "ALL"
+
+&&
+
+order.status !== filter
+
+){
+
+return;
+
+}
+
+        orderList.innerHTML += `
+
+<div class="order-card">
+
+<div class="order-title">
+📦 ${order.username}
+</div>
+
+<div class="order-info">
+🎯 Paket :
+${order.paket}
+</div>
+
+<div class="order-info">
+💰 Harga :
+Rp${Number(order.harga).toLocaleString("id-ID")}
+</div>
+
+<div class="order-info">
+📱 WA :
+${order.whatsapp}
+</div>
+
+<div class="order-info">
+📊 Status :
+<span class="
+status-badge
+${order.status}
+">
+${order.status}
+</span>
+</div>
+
+<div class="actions">
+
+<button
+class="edit-btn"
+onclick="
+finishOrder(
+'${key}'
+)
+">
+
+SELESAI
+
+</button>
+
+<button
+class="delete-btn"
+onclick="
+cancelOrder(
+'${key}'
+)
+">
+
+BATAL
+
+</button>
+
+</div>
+
+</div>
+
+`;
+      });
+  });
+}
+
+window.finishOrder =
+async(id)=>{
+
+const orderSnap =
+await get(
+ref(
+db,
+"orders/" + id
+)
+);
+
+if(
+!orderSnap.exists()
+)return;
+
+const order =
+orderSnap.val();
+
+const botSnap =
+await get(
+ref(
+db,
+"bots"
+)
+);
+
+const bots =
+botSnap.val() || {};
+
+let botKey = null;
+let botData = null;
+
+Object.keys(bots)
+.forEach(key=>{
+
+if(
+
+bots[key].username
+?.toLowerCase()
+===
+
+order.username
+.toLowerCase()
+
+){
+
+botKey = key;
+botData = bots[key];
+
+}
+
+});
+
+if(!botKey){
+
+alert(
+"Bot tidak ditemukan"
+);
+
+return;
+
+}
+
+const daysMap = {
+
+"1 Bulan":30,
+
+"3 Bulan":90,
+
+"6 Bulan":180,
+
+"1 Tahun":365,
+
+"Permanent":36500
+
+};
+
+const addDays =
+daysMap[
+order.paket
+] || 0;
+
+const split =
+botData.expired
+.split("/");
+
+const currentDate =
+new Date(
+
+split[2],
+split[1]-1,
+split[0]
+
+);
+
+currentDate.setDate(
+currentDate.getDate()
++
+addDays
+);
+
+const day =
+String(
+currentDate.getDate()
+).padStart(2,"0");
+
+const month =
+String(
+currentDate.getMonth()+1
+).padStart(2,"0");
+
+const year =
+currentDate.getFullYear();
+
+const newExpired =
+`${day}/${month}/${year}`;
+
+await update(
+ref(
+db,
+"bots/" + botKey
+),
+{
+expired:
+newExpired
+}
+);
+
+await update(
+ref(
+db,
+"orders/" + id
+),
+{
+status:
+"SELESAI"
+}
+);
+
+alert(
+"Order selesai & expired diperpanjang"
+);
+
+};
+
+window.cancelOrder =
+async(id)=>{
+
+await update(
+ref(
+db,
+"orders/" + id
+),
+{
+status:"BATAL"
+}
+);
+
+};
 
 function onetime() {
   return new Promise((resolve) => {

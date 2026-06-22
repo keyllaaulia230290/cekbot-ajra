@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+Perpanjang Bot
+</title>
+
+<link
+rel="stylesheet"
+href="perpanjang.css">
+
+</head>
+
+<body>
+
+<a href="index.html" class="backBtn">
+← Kembali
+</a>
+
+<h1>🔄 Perpanjang Bot</h1>
+
+<p class="subtitle">
+Perpanjang layanan bot AJRA
+</p>
+
+<input
+type="text"
+id="username"
+placeholder="Username Bot">
+
+<button id="checkBotBtn">
+🔍 Cek Akun
+</button>
+
+<div id="botPreview">
+</div>
+
+<h3>Pilih Paket</h3>
+
+<div class="paket-grid">
+
+<button
+class="paket"
+data-package="1 Bulan"
+data-price="20000">
+
+📅
+<div>1 Bulan</div>
+<div>Rp20.000</div>
+
+</button>
+
+<button
+class="paket"
+data-package="3 Bulan"
+data-price="60000">
+
+📅
+<div>3 Bulan</div>
+<div>Rp60.000</div>
+
+</button>
+
+<button
+class="paket"
+data-package="6 Bulan"
+data-price="100000">
+
+📅
+<div>6 Bulan</div>
+<div>Rp100.000</div>
+
+</button>
+
+<button
+class="paket"
+data-package="1 Tahun"
+data-price="170000">
+
+👑
+<div>1 Tahun</div>
+<div>Rp170.000</div>
+
+</button>
+
+<button
+class="paket permanent"
+data-package="Permanent"
+data-price="300000">
+
+🔥
+<div>Permanent</div>
+<div>Rp300.000</div>
+
+</button>
+
+</div>
+
+<h3>Metode Pembayaran</h3>
+
+<div class="payment-single">
+
+<div class="payment-card qris-card">
+
+<div class="payment-icon">
+📱
+</div>
+
+<div class="payment-title">
+QRIS
+</div>
+
+<div class="payment-desc">
+Semua E-Wallet & Mobile Banking
+</div>
+
+</div>
+
+</div>
+
+<h3>Ringkasan Pesanan</h3>
+
+<div class="invoice-card">
+
+<div class="invoice-row">
+<span>Paket</span>
+<span id="invoicePaket">
+Belum Dipilih
+</span>
+</div>
+
+<div class="invoice-row">
+<span>Harga</span>
+<span id="invoiceHarga">
+Rp0
+</span>
+</div>
+
+<div class="invoice-divider"></div>
+
+<div class="invoice-total">
+
+<span>Total Bayar</span>
+
+<span id="totalHarga">
+Rp0
+</span>
+
+</div>
+
+</div>
+
+<input
+type="text"
+id="promo"
+placeholder="Kode Promo (Opsional)">
+
+<input
+type="text"
+id="whatsapp"
+placeholder="Nomor WhatsApp">
+
+<button id="orderBtn">
+🚀 Buat Pesanan
+</button>
+
+<script
+type="module"
+src="perpanjang.js">
+</script>
+
+<div id="toast" class="toast">Pesan.</div>
+</body>
+</html>

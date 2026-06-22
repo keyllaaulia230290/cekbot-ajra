@@ -384,46 +384,60 @@ color:white;
 
 }
 
-.top-nav{
+.qris-box{
 
-display:flex;
+margin-top:20px;
 
-justify-content:flex-end;
+padding:20px;
 
-margin-bottom:15px;
+border-radius:20px;
 
-}
+background:#13233a;
 
-.event-link{
-
-padding:8px 14px;
-
-border-radius:12px;
-
-background:
-rgba(47,140,255,.12);
+text-align:center;
 
 border:
 1px solid
-rgba(47,140,255,.25);
-
-color:#7bb5ff;
-
-text-decoration:none;
-
-font-size:13px;
-font-weight:700;
-
-transition:.2s;
+rgba(255,255,255,.08);
 
 }
 
-.event-link:hover{
+.qris{
 
-background:
-rgba(47,140,255,.22);
+width:100%;
 
-color:white;
+max-width:320px;
+
+display:block;
+
+margin:15px auto;
+
+border-radius:16px;
+
+background:white;
+
+padding:8px;
+
+}
+
+@media(max-width:480px){
+
+.top-nav{
+
+justify-content:center;
+
+gap:8px;
+
+}
+
+.perpanjang-link,
+.event-link{
+
+padding:10px 14px;
+
+font-size:13px;
+
+}
 
 }
 
@@ -497,12 +511,6 @@ text-align:center;
 
 }
 
-.top-buttons{
-display:flex;
-justify-content:space-between;
-margin-bottom:15px;
-}
-
 .renew-link,
 .event-link{
 
@@ -510,8 +518,10 @@ display:flex;
 align-items:center;
 justify-content:center;
 
-width:120px;
-height:46px;
+padding:12px 18px;
+
+height:auto;
+width:auto;
 
 text-decoration:none;
 font-weight:600;
@@ -533,6 +543,9 @@ box-shadow:
 rgba(47,140,255,.15);
 
 transition:.2s;
+
+white-space:nowrap;
+
 }
 
 .renew-link:hover,
@@ -542,5 +555,59 @@ transform:translateY(-2px);
 
 background:
 rgba(25,50,85,.95);
+
+}
+
+@media(max-width:480px){
+
+.top-buttons{
+
+justify-content:center;
+
+gap:8px;
+
+}
+
+.renew-link,
+.event-link{
+
+font-size:13px;
+
+padding:10px 14px;
+
+}
+
+}
+
+.top-nav{
+
+display:flex !important;
+
+justify-content:center !important;
+
+align-items:center !important;
+
+gap:10px !important;
+
+margin-bottom:20px !important;
+
+}
+
+.top-nav .renew-link,
+.top-nav .event-link{
+
+width:auto !important;
+
+height:auto !important;
+
+padding:12px 18px !important;
+
+display:flex !important;
+
+align-items:center !important;
+
+justify-content:center !important;
+
+white-space:nowrap !important;
 
 }

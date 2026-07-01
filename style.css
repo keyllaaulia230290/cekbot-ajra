@@ -611,3 +611,48 @@ justify-content:center !important;
 white-space:nowrap !important;
 
 }
+
+.garansi-link{
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+width:120px;
+height:46px;
+
+text-decoration:none;
+font-weight:600;
+font-size:14px;
+
+border-radius:14px;
+
+color:#dce8ff;
+
+background:
+rgba(19,35,58,.95);
+
+border:
+1px solid
+rgba(0,255,170,.25);
+
+box-shadow:
+0 0 15px
+rgba(0,255,170,.15);
+
+transition:.25s;
+
+}
+
+.garansi-link:hover{
+
+transform:translateY(-2px);
+
+background:
+rgba(20,50,70,.95);
+
+box-shadow:
+0 0 20px
+rgba(0,255,170,.3);
+
+}

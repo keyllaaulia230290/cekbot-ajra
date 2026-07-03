@@ -47,13 +47,27 @@ loginBtn.addEventListener("click", async () => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
 
-    loginBox.classList.add("hidden");
+const user = auth.currentUser;
 
-    dashboard.classList.remove("hidden");
+const adminSnap = await get(ref(db, "admins/" + user.uid));
 
-    loadBots();
-    loadOrders();
-    loadClaims();
+if (!adminSnap.exists()) {
+
+    alert("Akun ini bukan admin.");
+
+    await signOut(auth);
+
+    return;
+
+}
+
+loginBox.classList.add("hidden");
+
+dashboard.classList.remove("hidden");
+
+loadBots();
+loadOrders();
+loadClaims();
   } catch {
     alert("Login gagal");
   }
@@ -640,6 +654,44 @@ newExpired
 }
 );
 
+// =========================
+// KOMISI AFFILIATE
+// =========================
+
+if (order.referralCode) {
+
+    const affiliateSnap = await get(ref(db, "affiliates"));
+
+    if (affiliateSnap.exists()) {
+
+        const affiliates = affiliateSnap.val();
+
+        for (const uid in affiliates) {
+
+            const affiliate = affiliates[uid];
+
+            if (affiliate.referralCode === order.referralCode) {
+
+                const komisi = Math.floor(order.harga * 0.10);
+
+                await update(
+                    ref(db, "affiliates/" + uid),
+                    {
+                        pending: (affiliate.pending || 0) + komisi,
+                        totalReferral: (affiliate.totalReferral || 0) + 1
+                    }
+                );
+
+                break;
+
+            }
+
+        }
+
+    }
+
+}
+
 await update(
 ref(
 db,
@@ -650,6 +702,24 @@ status:
 "SELESAI"
 }
 );
+
+const historyRef = push(ref(db, "affiliateHistory"));
+
+await set(historyRef, {
+
+    affiliateUid: uid,
+
+    referralCode: affiliate.referralCode,
+
+    username: order.username,
+
+    paket: order.paket,
+
+    komisi,
+
+    createdAt: Date.now()
+
+});
 
 alert(
 "Order selesai & expired diperpanjang"

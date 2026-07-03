@@ -334,26 +334,3 @@ findBot();
 }
 
 });
-
-const comingSoonBtn = document.getElementById("comingSoonBtn");
-const comingSoonModal = document.getElementById("comingSoonModal");
-const closeComingSoon = document.getElementById("closeComingSoon");
-
-if (comingSoonBtn && comingSoonModal && closeComingSoon) {
-
-  comingSoonBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    comingSoonModal.classList.remove("hidden");
-  });
-
-  closeComingSoon.addEventListener("click", () => {
-    comingSoonModal.classList.add("hidden");
-  });
-
-  comingSoonModal.addEventListener("click", (e) => {
-    if (e.target === comingSoonModal) {
-      comingSoonModal.classList.add("hidden");
-    }
-  });
-
-}

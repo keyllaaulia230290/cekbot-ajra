@@ -1,37 +1,5 @@
 import { db, ref, push, set, get } from "./firebase/config.js";
 
-const params = new URLSearchParams(window.location.search);
-
-const referralCode = params.get("ref");
-
-let affiliateDiscount = 0;
-let referralValid = false;
-
-if (referralCode) {
-
-    const snap = await get(ref(db, "affiliates"));
-
-    if (snap.exists()) {
-
-        const affiliates = snap.val();
-
-        Object.values(affiliates).forEach((item) => {
-
-            if (item.referralCode === referralCode) {
-
-                referralValid = true;
-
-            }
-
-        });
-
-    }
-
-    console.log("Referral Valid :", referralValid);
-
-}
-
-
 const checkBotBtn = document.getElementById("checkBotBtn");
 
 const botPreview = document.getElementById("botPreview");
@@ -66,21 +34,11 @@ paketBtns.forEach((btn) => {
 function updateTotal() {
   const promo = document.getElementById("promo").value.trim().toUpperCase();
 
-let finalPrice = selectedPrice;
+  let finalPrice = selectedPrice;
 
-// Promo HAPPYJUNE
-if (promo === "HAPPYJUNE") {
-    finalPrice = Math.floor(finalPrice * 0.9);
-}
-
-// Diskon Affiliate 5%
-if (referralValid) {
-
-    affiliateDiscount = Math.floor(finalPrice * 0.05);
-
-    finalPrice -= affiliateDiscount;
-
-}
+  if (promo === "HAPPYJUNE") {
+    finalPrice = Math.floor(selectedPrice * 0.9);
+  }
 
   document.getElementById("invoicePaket").innerText =
     selectedPackage || "Belum Dipilih";
@@ -131,19 +89,12 @@ document.getElementById("orderBtn").addEventListener("click", async () => {
 
     const orderRef = push(ref(db, "orders"));
 
-let finalPrice = selectedPrice;
+    const finalPrice =
+      promoInput.value.trim().toUpperCase() === "HAPPYJUNE"
+        ? Math.floor(selectedPrice * 0.9)
+        : selectedPrice;
 
-if (promoInput.value.trim().toUpperCase() === "HAPPYJUNE") {
-    finalPrice = Math.floor(finalPrice * 0.9);
-}
-
-if (referralValid) {
-    affiliateDiscount = Math.floor(finalPrice * 0.05);
-    finalPrice -= affiliateDiscount;
-}
-
-await set(orderRef, {
-
+    await set(orderRef, {
       username,
 
       whatsapp,
@@ -154,19 +105,12 @@ await set(orderRef, {
 
       harga: finalPrice,
 
-      diskonAffiliate: affiliateDiscount,
-
-      referralCode : referralValid ? referralCode : null,
-
-      payment: selectedPayment || "QRIS",
+      payment: "QRIS",
 
       status: "PENDING",
 
       createdAt: Date.now(),
-
-      
-
-});
+    });
 
     showToast("Pesanan berhasil dibuat", "success");
 

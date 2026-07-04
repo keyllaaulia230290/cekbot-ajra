@@ -3,6 +3,8 @@ import {
     db,
     ref,
     get,
+    push,
+    set,
     signOut,
     onAuthStateChanged
 } from "./firebase/config.js";
@@ -17,9 +19,17 @@ const referral = document.getElementById("referral");
 const pending = document.getElementById("pending");
 const withdraw = document.getElementById("withdraw");
 
-const referralLink = document.getElementById("referralLink");
+const botReferral =
+document.getElementById("botReferral");
 
-const copyBtn = document.getElementById("copyReferral");
+const renewReferral =
+document.getElementById("renewReferral");
+
+const copyBotBtn =
+document.getElementById("copyBotReferral");
+
+const copyRenewBtn =
+document.getElementById("copyRenewReferral");
 
 const logoutBtn = document.getElementById("logoutBtn");
 
@@ -75,13 +85,15 @@ onAuthStateChanged(auth, async (user) => {
 
         withdraw.textContent = "Rp" + (data.withdraw || 0).toLocaleString("id-ID");
 
-        const link =
+const botLink =
+`https://cekbot.ajra.store/pasangbot.html?ref=${data.referralCode}`;
 
-            "https://cekbot.ajra.store/perpanjang.html?ref=" +
+const renewLink =
+`https://cekbot.ajra.store/perpanjang.html?ref=${data.referralCode}`;
 
-            data.referralCode;
+botReferral.value = botLink;
 
-        referralLink.value = link;
+renewReferral.value = renewLink;
 
         // =====================
 // RIWAYAT KOMISI
@@ -207,27 +219,55 @@ Belum ada riwayat.
 // COPY LINK
 // =========================
 
-copyBtn.addEventListener("click", async () => {
+copyBotBtn.addEventListener("click", async () => {
 
-    try {
+    try{
 
         await navigator.clipboard.writeText(
-
-            referralLink.value
-
+            botReferral.value
         );
 
-        copyBtn.innerText = "✅ Link Disalin";
+        copyBotBtn.innerText =
+        "✅ Link Disalin";
 
-        setTimeout(() => {
+        setTimeout(()=>{
 
-            copyBtn.innerText = "Salin Link Referral";
+            copyBotBtn.innerText =
+            "📋 Salin Link Pasang Bot";
 
-        }, 2000);
+        },2000);
 
     }
 
-    catch {
+    catch{
+
+        alert("Gagal menyalin link.");
+
+    }
+
+});
+
+copyRenewBtn.addEventListener("click", async () => {
+
+    try{
+
+        await navigator.clipboard.writeText(
+            renewReferral.value
+        );
+
+        copyRenewBtn.innerText =
+        "✅ Link Disalin";
+
+        setTimeout(()=>{
+
+            copyRenewBtn.innerText =
+            "📋 Salin Link Perpanjang";
+
+        },2000);
+
+    }
+
+    catch{
 
         alert("Gagal menyalin link.");
 
@@ -249,31 +289,38 @@ logoutBtn.addEventListener("click", async () => {
 
 });
 
-withdrawBtn.addEventListener("click", () => {
+withdrawBtn.addEventListener("click", async () => {
 
     if (!affiliateData) return;
 
-    if ((affiliateData.pending || 0) <= 0) {
+    const nominal = affiliateData.pending || 0;
+
+    if (nominal <= 0) {
+
         alert("Belum ada komisi yang bisa dicairkan.");
+
         return;
+
     }
 
-    const pesan = `Halo Admin AJRA 👋
+    const requestRef = push(ref(db, "withdrawRequests"));
 
-Saya ingin melakukan withdraw komisi.
+    await set(requestRef, {
 
-Nama : ${affiliateData.nama}
+        affiliateUid: auth.currentUser.uid,
 
-Kode Referral : ${affiliateData.referralCode}
+        nama: affiliateData.nama,
 
-Total Komisi : Rp${affiliateData.pending.toLocaleString("id-ID")}
+        referralCode: affiliateData.referralCode,
 
-Terima kasih.`;
+        nominal,
 
-    window.open(
-        "https://wa.me/6285885385659?text=" +
-        encodeURIComponent(pesan),
-        "_blank"
-    );
+        status: "PENDING",
+
+        createdAt: Date.now()
+
+    });
+
+    alert("Request withdraw berhasil dikirim ke Admin.");
 
 });

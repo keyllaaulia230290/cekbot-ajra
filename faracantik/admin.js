@@ -28,12 +28,13 @@ const botList = document.getElementById("botList");
 
 const orderList = document.getElementById("orderList");
 
+const botOrderList = document.getElementById("botOrderList");
+
+const withdrawRequestList = document.getElementById("withdrawRequestList");
+
 const orderFilter = document.getElementById("orderFilter");
 
-orderFilter.addEventListener(
-"change",
-loadOrders
-);
+orderFilter.addEventListener("change", loadOrders);
 
 let isEditing = false;
 let selectedBotId = null;
@@ -47,27 +48,27 @@ loginBtn.addEventListener("click", async () => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
 
-const user = auth.currentUser;
+    const user = auth.currentUser;
 
-const adminSnap = await get(ref(db, "admins/" + user.uid));
+    const adminSnap = await get(ref(db, "admins/" + user.uid));
 
-if (!adminSnap.exists()) {
+    if (!adminSnap.exists()) {
+      alert("Akun ini bukan admin.");
 
-    alert("Akun ini bukan admin.");
+      await signOut(auth);
 
-    await signOut(auth);
+      return;
+    }
 
-    return;
+    loginBox.classList.add("hidden");
 
-}
+    dashboard.classList.remove("hidden");
 
-loginBox.classList.add("hidden");
-
-dashboard.classList.remove("hidden");
-
-loadBots();
-loadOrders();
-loadClaims();
+    loadBots();
+    loadOrders();
+    loadBotOrders();
+    loadWithdrawRequests();
+    loadClaims();
   } catch {
     alert("Login gagal");
   }
@@ -441,22 +442,11 @@ Belum ada pesanan
       .forEach((key) => {
         const order = orders[key];
 
-        const filter =
-orderFilter.value;
+        const filter = orderFilter.value;
 
-if(
-
-filter !== "ALL"
-
-&&
-
-order.status !== filter
-
-){
-
-return;
-
-}
+        if (filter !== "ALL" && order.status !== filter) {
+          return;
+        }
 
         orderList.innerHTML += `
 
@@ -526,220 +516,482 @@ BATAL
   });
 }
 
-window.finishOrder =
-async(id)=>{
+function loadBotOrders() {
 
-const orderSnap =
-await get(
-ref(
-db,
-"orders/" + id
-)
-);
+  onValue(ref(db, "ordersBot"), (snapshot) => {
 
-if(
-!orderSnap.exists()
-)return;
+    botOrderList.innerHTML = "";
 
-const order =
-orderSnap.val();
+    if (!snapshot.exists()) {
 
-const botSnap =
-await get(
-ref(
-db,
-"bots"
-)
-);
+      botOrderList.innerHTML = `
+<div class="notfound">
+Belum ada order bot
+</div>
+`;
 
-const bots =
-botSnap.val() || {};
+      return;
+    }
 
-let botKey = null;
-let botData = null;
+    const orders = snapshot.val();
 
-Object.keys(bots)
-.forEach(key=>{
+    Object.keys(orders)
+      .reverse()
+      .forEach((key) => {
 
-if(
+        const order = orders[key];
 
-bots[key].username
-?.toLowerCase()
-===
+        botOrderList.innerHTML += `
 
-order.username
-.toLowerCase()
+<div class="order-card">
 
-){
+<div class="order-title">
+🤖 ${order.nickname}
+</div>
 
-botKey = key;
-botData = bots[key];
+<div class="order-info">
+📦 Paket :
+${order.paket}
+</div>
+
+<div class="order-info">
+💰 Harga :
+Rp${Number(order.total || order.harga).toLocaleString("id-ID")}
+</div>
+
+<div class="order-info">
+📱 WA :
+${order.whatsapp}
+</div>
+
+<div class="order-info">
+📊 Status :
+<span class="status-badge ${order.status}">
+${order.status}
+</span>
+</div>
+
+<div class="actions">
+
+<button
+class="edit-btn"
+onclick="finishBotOrder('${key}')">
+
+SELESAI
+
+</button>
+
+<button
+class="delete-btn"
+onclick="cancelBotOrder('${key}')">
+
+BATAL
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+      });
+
+  });
 
 }
 
-});
+function loadWithdrawRequests() {
 
-if(!botKey){
+  onValue(ref(db, "withdrawRequests"), (snapshot) => {
 
-alert(
-"Bot tidak ditemukan"
-);
+    withdrawRequestList.innerHTML = "";
 
-return;
+    if (!snapshot.exists()) {
+
+      withdrawRequestList.innerHTML = `
+<div class="notfound">
+Belum ada request withdraw
+</div>
+`;
+
+      return;
+
+    }
+
+    const requests = snapshot.val();
+
+    Object.keys(requests)
+      .reverse()
+      .forEach((key) => {
+
+        const item = requests[key];
+
+        withdrawRequestList.innerHTML += `
+
+<div class="order-card">
+
+<div class="order-title">
+
+💸 ${item.nama}
+
+</div>
+
+<div class="order-info">
+
+🏷 ${item.referralCode}
+
+</div>
+
+<div class="order-info">
+
+💰 Rp${Number(item.nominal).toLocaleString("id-ID")}
+
+</div>
+
+<div class="order-info">
+
+📊
+
+<span class="status-badge ${item.status}">
+
+${item.status}
+
+</span>
+
+</div>
+
+<div class="actions">
+
+<button
+class="edit-btn"
+onclick="approveWithdraw('${key}')">
+
+PROSES
+
+</button>
+
+<button
+class="delete-btn"
+onclick="rejectWithdraw('${key}')">
+
+TOLAK
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+      });
+
+  });
 
 }
 
-const daysMap = {
+window.finishOrder = async (id) => {
+  const orderSnap = await get(ref(db, "orders/" + id));
 
-"1 Bulan":30,
+  if (!orderSnap.exists()) return;
 
-"3 Bulan":90,
+  const order = orderSnap.val();
 
-"6 Bulan":180,
+  const botSnap = await get(ref(db, "bots"));
 
-"1 Tahun":365,
+  const bots = botSnap.val() || {};
 
-"Permanent":36500
+  let botKey = null;
+  let botData = null;
 
+  Object.keys(bots).forEach((key) => {
+    if (bots[key].username?.toLowerCase() === order.username.toLowerCase()) {
+      botKey = key;
+      botData = bots[key];
+    }
+  });
+
+  if (!botKey) {
+    alert("Bot tidak ditemukan");
+
+    return;
+  }
+
+  const daysMap = {
+    "1 Bulan": 30,
+
+    "3 Bulan": 90,
+
+    "6 Bulan": 180,
+
+    "1 Tahun": 365,
+
+    Permanent: 36500,
+  };
+
+  const addDays = daysMap[order.paket] || 0;
+
+  const split = botData.expired.split("/");
+
+  const currentDate = new Date(split[2], split[1] - 1, split[0]);
+
+  currentDate.setDate(currentDate.getDate() + addDays);
+
+  const day = String(currentDate.getDate()).padStart(2, "0");
+
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+
+  const year = currentDate.getFullYear();
+
+  const newExpired = `${day}/${month}/${year}`;
+
+  await update(ref(db, "bots/" + botKey), {
+    expired: newExpired,
+  });
+
+  // =========================
+  // KOMISI AFFILIATE
+  // =========================
+  let affiliateUid = null;
+  let affiliateData = null;
+  let komisi = 0;
+  if (order.referralCode) {
+    const affiliateSnap = await get(ref(db, "affiliates"));
+
+    if (affiliateSnap.exists()) {
+      const affiliates = affiliateSnap.val();
+
+      for (const uid in affiliates) {
+        const affiliate = affiliates[uid];
+
+        if (affiliate.referralCode === order.referralCode) {
+          affiliateUid = uid;
+          affiliateData = affiliate;
+
+          komisi = Math.floor(order.harga * 0.1);
+
+          await update(ref(db, "affiliates/" + uid), {
+            pending: (affiliate.pending || 0) + komisi,
+            totalReferral: (affiliate.totalReferral || 0) + 1,
+          });
+
+          break;
+        }
+      }
+    }
+  }
+
+  await update(ref(db, "orders/" + id), {
+    status: "SELESAI",
+  });
+
+  if (affiliateUid) {
+    const historyRef = push(ref(db, "affiliateHistory"));
+
+    await set(historyRef, {
+      affiliateUid: affiliateUid,
+
+      referralCode: affiliateData.referralCode,
+
+      username: order.username,
+
+      paket: order.paket,
+
+      komisi: komisi,
+
+      createdAt: Date.now(),
+    });
+  }
+
+  alert("Order selesai & expired diperpanjang");
 };
 
-const addDays =
-daysMap[
-order.paket
-] || 0;
+window.finishBotOrder = async (id) => {
 
-const split =
-botData.expired
-.split("/");
+  const orderSnap = await get(ref(db, "ordersBot/" + id));
 
-const currentDate =
-new Date(
+  if (!orderSnap.exists()) return;
 
-split[2],
-split[1]-1,
-split[0]
+  const order = orderSnap.val();
 
-);
+  // =========================
+  // KOMISI AFFILIATE
+  // =========================
 
-currentDate.setDate(
-currentDate.getDate()
-+
-addDays
-);
+  let affiliateUid = null;
+  let affiliateData = null;
+  let komisi = 0;
 
-const day =
-String(
-currentDate.getDate()
-).padStart(2,"0");
-
-const month =
-String(
-currentDate.getMonth()+1
-).padStart(2,"0");
-
-const year =
-currentDate.getFullYear();
-
-const newExpired =
-`${day}/${month}/${year}`;
-
-await update(
-ref(
-db,
-"bots/" + botKey
-),
-{
-expired:
-newExpired
-}
-);
-
-// =========================
-// KOMISI AFFILIATE
-// =========================
-
-if (order.referralCode) {
+  if (order.referralCode) {
 
     const affiliateSnap = await get(ref(db, "affiliates"));
 
     if (affiliateSnap.exists()) {
 
-        const affiliates = affiliateSnap.val();
+      const affiliates = affiliateSnap.val();
 
-        for (const uid in affiliates) {
+      for (const uid in affiliates) {
 
-            const affiliate = affiliates[uid];
+        const affiliate = affiliates[uid];
 
-            if (affiliate.referralCode === order.referralCode) {
+        if (affiliate.referralCode === order.referralCode) {
 
-                const komisi = Math.floor(order.harga * 0.10);
+          affiliateUid = uid;
+          affiliateData = affiliate;
 
-                await update(
-                    ref(db, "affiliates/" + uid),
-                    {
-                        pending: (affiliate.pending || 0) + komisi,
-                        totalReferral: (affiliate.totalReferral || 0) + 1
-                    }
-                );
+          komisi = Math.floor((order.total || order.harga) * 0.10);
 
-                break;
+          await update(ref(db, "affiliates/" + uid), {
 
-            }
+            pending: (affiliate.pending || 0) + komisi,
+
+            totalReferral: (affiliate.totalReferral || 0) + 1
+
+          });
+
+          break;
 
         }
 
+      }
+
     }
 
-}
+  }
 
-await update(
-ref(
-db,
-"orders/" + id
-),
-{
-status:
-"SELESAI"
-}
-);
+  await update(ref(db, "ordersBot/" + id), {
 
-const historyRef = push(ref(db, "affiliateHistory"));
+    status: "SELESAI"
 
-await set(historyRef, {
+  });
 
-    affiliateUid: uid,
+  if (affiliateUid) {
 
-    referralCode: affiliate.referralCode,
+    const historyRef = push(ref(db, "affiliateHistory"));
 
-    username: order.username,
+    await set(historyRef, {
 
-    paket: order.paket,
+      affiliateUid,
 
-    komisi,
+      referralCode: affiliateData.referralCode,
 
-    createdAt: Date.now()
+      username: order.nickname,
 
-});
+      paket: order.paket,
 
-alert(
-"Order selesai & expired diperpanjang"
-);
+      komisi,
+
+      createdAt: Date.now()
+
+    });
+
+  }
+
+  alert("Order Pasang Bot selesai.");
 
 };
 
-window.cancelOrder =
-async(id)=>{
+window.cancelBotOrder = async (id) => {
 
-await update(
-ref(
-db,
-"orders/" + id
-),
-{
-status:"BATAL"
-}
-);
+  await update(ref(db, "ordersBot/" + id), {
 
+    status: "BATAL"
+
+  });
+
+};
+
+window.approveWithdraw = async (id) => {
+
+  const requestSnap = await get(ref(db, "withdrawRequests/" + id));
+
+  if (!requestSnap.exists()) return;
+
+  const request = requestSnap.val();
+
+  if (request.status === "SELESAI") {
+
+    alert("Request sudah diproses.");
+
+    return;
+
+  }
+
+  const affiliateRef = ref(db, "affiliates/" + request.affiliateUid);
+
+  const affiliateSnap = await get(affiliateRef);
+
+  if (!affiliateSnap.exists()) {
+
+    alert("Affiliate tidak ditemukan.");
+
+    return;
+
+  }
+
+  const affiliate = affiliateSnap.val();
+
+  const pending = affiliate.pending || 0;
+
+  const withdraw = affiliate.withdraw || 0;
+
+  if (pending < request.nominal) {
+
+    alert("Saldo pending tidak mencukupi.");
+
+    return;
+
+  }
+
+  await update(affiliateRef, {
+
+    pending: pending - request.nominal,
+
+    withdraw: withdraw + request.nominal
+
+  });
+
+  await update(ref(db, "withdrawRequests/" + id), {
+
+    status: "SELESAI"
+
+  });
+
+  alert("Withdraw berhasil diproses.");
+
+};
+
+window.rejectWithdraw = async (id) => {
+
+  const requestSnap = await get(ref(db, "withdrawRequests/" + id));
+
+  if (!requestSnap.exists()) return;
+
+  const request = requestSnap.val();
+
+  if (request.status !== "PENDING") {
+
+    alert("Request sudah diproses.");
+
+    return;
+
+  }
+
+  await update(ref(db, "withdrawRequests/" + id), {
+
+    status: "DITOLAK"
+
+  });
+
+  alert("Request ditolak.");
+
+};
+
+window.cancelOrder = async (id) => {
+  await update(ref(db, "orders/" + id), {
+    status: "BATAL",
+  });
 };
 
 function onetime() {

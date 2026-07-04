@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Jasa Bot Bank AJRA</title>
+
+<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="pasangbot.css">
+
+</head>
+
+<body>
+
+<div class="bg-grid"></div>
+
+<div class="container">
+
+<a href="index.html"
+class="back-btn">
+
+← Kembali
+
+</a>
+
+<section class="hero">
+
+<div class="hero-badge">
+
+🤖 AJRA STORE
+
+</div>
+
+<h1>
+
+Jasa Bot Bank AJRA
+
+</h1>
+
+<p>
+
+Bot otomatis 24 jam untuk Lords Mobile.
+Semua pengaturan dapat dikustom sesuai kebutuhan akun.
+
+</p>
+
+<a href="#formBot"
+class="hero-btn">
+
+🚀 Mulai Pasang Bot
+
+</a>
+
+</section>
+
+<section class="card">
+
+<h2>
+
+✨ Fitur Bot
+
+</h2>
+
+<div class="feature-grid">
+
+<div class="feature">🛡 Auto Shield & Anti</div>
+
+<div class="feature">📋 Auto Daily Quest</div>
+
+<div class="feature">🎁 Send Help & Collect Gifts</div>
+
+<div class="feature">🌾 Auto Supply RSS</div>
+
+<div class="feature">⛏ Nambang & Realm</div>
+
+<div class="feature">⚔ Join Rally Darknest</div>
+
+<div class="feature">🚚 Auto Cargo</div>
+
+<div class="feature">🦸 Hero Stage</div>
+
+<div class="feature">🏟 Auto Colosseum</div>
+
+<div class="feature">🏗 Auto Build</div>
+
+<div class="feature">🔬 Auto Research</div>
+
+<div class="feature">🛡 Auto Heal</div>
+
+<div class="feature">🏹 Auto Train</div>
+
+<div class="feature">👹 Attack Monster</div>
+
+<div class="feature">🐾 Auto Familiar</div>
+
+<div class="feature">🏦 Guild Bank</div>
+
+<div class="feature">🚫 Blacklist</div>
+
+<div class="feature">✅ Whitelist</div>
+
+<div class="feature">✨ Dan Lain-lain</div>
+
+</div>
+
+</section>
+
+<section
+id="formBot"
+class="card">
+
+<h2>
+
+📋 Pengaturan Bot
+
+</h2>
+
+<div class="form-grid">
+
+<div class="input-group">
+
+<label>
+
+Nickname Akun
+
+</label>
+
+<input
+id="nickname"
+placeholder="Contoh : AJRA STORE"
+required>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Nick Admin
+
+</label>
+
+<input
+id="adminNick"
+placeholder="Contoh : AJRA"
+required>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Mode Bot
+
+</label>
+
+<select id="mode">
+
+<option>Klan</option>
+
+<option>Pribadi</option>
+
+</select>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Waktu Relogin
+
+</label>
+
+<input
+id="relogin"
+placeholder="Contoh : 10 Menit">
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Tipe Nambang
+
+</label>
+
+<select id="rss">
+
+<option>Food</option>
+
+<option>Stone</option>
+
+<option>Wood</option>
+
+<option>Ore</option>
+
+<option>Gold</option>
+
+</select>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Jumlah Slot Nambang
+
+</label>
+
+<input
+id="slot"
+placeholder="Contoh : 5">
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Join Darknest Level
+
+</label>
+
+<input
+id="darknest"
+placeholder="Contoh : 1-5">
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Darkness
+
+</label>
+
+<select id="darkness">
+
+<option>1 Troop</option>
+
+<option>Full</option>
+
+</select>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Latih Pasukan
+
+</label>
+
+<input
+id="troop"
+placeholder="Contoh : T4">
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Auto Heal
+
+</label>
+
+<select id="heal">
+
+<option>ON</option>
+
+<option>OFF</option>
+
+</select>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Riset Diutamakan
+
+</label>
+
+<input
+id="research"
+placeholder="Contoh : Militer">
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Upgrade Bangunan
+
+</label>
+
+<input
+id="building"
+placeholder="Contoh : Castle">
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Kill Monster Level
+
+</label>
+
+<input
+id="monster"
+placeholder="Contoh : 5">
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Kode Bot
+
+</label>
+
+<input
+id="code"
+maxlength="1"
+placeholder="Contoh : A">
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Familiar Pact
+
+</label>
+
+<input
+id="pact"
+placeholder="Contoh : 4">
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Stage Hero
+
+</label>
+
+<select id="stage">
+
+<option>Normal</option>
+
+<option>Elite</option>
+
+</select>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Auto Shield
+
+</label>
+
+<select id="shield">
+
+<option>ON</option>
+
+<option>OFF</option>
+
+</select>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="card">
+
+<h2>
+
+🔐 Data Login Akun
+
+</h2>
+
+<div class="form-grid">
+
+<div class="input-group">
+
+<label>
+
+Email Login
+
+</label>
+
+<input
+type="email"
+id="email"
+placeholder="nama@gmail.com"
+required>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Password
+
+</label>
+
+<input
+type="password"
+id="password"
+placeholder="********"
+required>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+WhatsApp
+
+</label>
+
+<input
+type="tel"
+id="whatsapp"
+placeholder="628xxxxxxxxxx"
+required>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="card">
+
+<h2>
+
+💰 Pilih Paket
+
+</h2>
+
+<div class="package-grid">
+
+<div
+class="package"
+data-package="1 Bulan"
+data-price="25000">
+
+<h3>
+
+1 Bulan
+
+</h3>
+
+<b>
+
+Rp25.000
+
+</b>
+
+<span>
+
+Garansi RSS
+
+</span>
+
+</div>
+
+<div
+class="package"
+data-package="3 Bulan"
+data-price="60000">
+
+<h3>
+
+3 Bulan
+
+</h3>
+
+<b>
+
+Rp60.000
+
+</b>
+
+<span>
+
+Garansi RSS
+
+</span>
+
+</div>
+
+<div
+class="package"
+data-package="6 Bulan"
+data-price="100000">
+
+<h3>
+
+6 Bulan
+
+</h3>
+
+<b>
+
+Rp100.000
+
+</b>
+
+<span>
+
+Garansi RSS
+
+</span>
+
+</div>
+
+<div
+class="package"
+data-package="1 Tahun"
+data-price="150000">
+
+<div class="best">
+
+BEST
+
+</div>
+
+<h3>
+
+1 Tahun
+
+</h3>
+
+<b>
+
+Rp150.000
+
+</b>
+
+<span>
+
+Garansi RSS + Gems
+
+</span>
+
+</div>
+
+<div
+class="package premium"
+data-package="Permanent"
+data-price="300000">
+
+<div class="best">
+
+PREMIUM
+
+</div>
+
+<h3>
+
+Permanent
+
+</h3>
+
+<b>
+
+Rp300.000
+
+</b>
+
+<span>
+
+Garansi RSS + Gems
+
+</span>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="card">
+
+<h2>
+
+💳 Metode Pembayaran
+
+</h2>
+
+<div class="payment-grid">
+
+<div
+class="payment-card active"
+data-payment="QRIS">
+
+<div class="payment-icon">
+
+📱
+
+</div>
+
+<h3>
+
+QRIS
+
+</h3>
+
+<p>
+
+Semua E-Wallet & Mobile Banking
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="card">
+
+<h2>
+
+🎁 Kode Promo
+
+</h2>
+
+<div class="promo-box">
+
+<input
+type="text"
+id="promo"
+placeholder="Masukkan kode promo">
+
+</div>
+
+</section>
+
+<section class="card invoice">
+
+<h2>
+
+🧾 Ringkasan Pesanan
+
+</h2>
+
+<div class="invoice-row">
+
+<span>
+
+Paket
+
+</span>
+
+<b id="invoicePaket">
+
+Belum Dipilih
+
+</b>
+
+</div>
+
+<div class="invoice-row">
+
+<span>
+
+Harga
+
+</span>
+
+<b id="invoiceHarga">
+
+Rp0
+
+</b>
+
+</div>
+
+<div class="invoice-row">
+
+<span>
+
+Diskon Promo
+
+</span>
+
+<b id="promoDiscount">
+
+Rp0
+
+</b>
+
+</div>
+
+<div class="invoice-row">
+
+<span>
+
+Diskon Affiliate
+
+</span>
+
+<b id="affiliateDiscount">
+
+Rp0
+
+</b>
+
+</div>
+
+<hr>
+
+<div class="invoice-total">
+
+<span>
+
+TOTAL
+
+</span>
+
+<b id="totalHarga">
+
+Rp0
+
+</b>
+
+</div>
+
+</section>
+
+<section class="card warning">
+
+<h2>
+
+📝 Keterangan
+
+</h2>
+
+<ul>
+
+<li>
+
+Selain pengaturan di atas, bot akan menjalankan fitur otomatis sesuai sistem AJRA.
+
+</li>
+
+<li>
+
+Akun wajib sudah melakukan Top Up minimal Paket Pemula Rp3.000.
+
+</li>
+
+<li>
+
+Minimal Castle Level 20 untuk mengakses Guild Bank.
+
+</li>
+
+<li>
+
+Jika Castle masih di bawah Level 20, bot akan memprioritaskan upgrade Castle terlebih dahulu.
+
+</li>
+
+<li>
+
+Pastikan Email dan Password yang diberikan benar agar proses pemasangan berjalan lancar.
+
+</li>
+
+</ul>
+
+</section>
+
+<button
+id="orderBtn"
+class="order-btn">
+
+🚀 Pasang Bot Sekarang
+
+</button>
+
+</div>
+
+<script type="module" src="pasangbot.js"></script>
+
+</body>
+
+</html>

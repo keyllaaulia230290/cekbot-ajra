@@ -68,8 +68,8 @@ function updateTotal() {
 
 let finalPrice = selectedPrice;
 
-// Promo HAPPYJUNE
-if (promo === "HAPPYJUNE") {
+// Promo HAPPYJULY
+if (promo === "HAPPYJULY") {
     finalPrice = Math.floor(finalPrice * 0.9);
 }
 
@@ -133,7 +133,7 @@ document.getElementById("orderBtn").addEventListener("click", async () => {
 
 let finalPrice = selectedPrice;
 
-if (promoInput.value.trim().toUpperCase() === "HAPPYJUNE") {
+if (promoInput.value.trim().toUpperCase() === "HAPPYJULY") {
     finalPrice = Math.floor(finalPrice * 0.9);
 }
 

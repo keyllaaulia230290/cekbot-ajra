@@ -1,139 +1,83 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>AJRA Checkbot</title>
+    <title>AJRA Checkbot</title>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  />
-</head>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<body>
+  <body>
+    <div class="container">
+      <div class="top-nav-wrapper">
+        <div class="top-nav">
+          <a href="perpanjang.html" class="renew-link"> 🔄 Perpanjang </a>
 
-<div class="container">
+          <a href="pasangbot.html" class="install-link"> 🤖 Pasang Bot </a>
 
-<div class="top-nav-wrapper">
-<div class="top-nav">
+          <a href="reward.html" class="event-link"> 🎁 Event </a>
 
-<a href="perpanjang.html" class="renew-link">
-🔄 Perpanjang
-</a>
+          <a href="garansi.html" class="garansi-link"> 🛡️ Garansi </a>
 
-<a href="pasangbot.html" class="install-link">
-🤖 Pasang Bot
-</a>
+          <a href="affiliate.html" class="affiliate-link"> 🤝 Affiliate </a>
+        </div>
 
-<a href="reward.html" class="event-link">
-🎁 Event
-</a>
+        <div class="scroll-hint">
+          <span>← Geser →</span>
+        </div>
+      </div>
 
-<a href="garansi.html" class="garansi-link">
-🛡️ Garansi
-</a>
+      <div class="logo-wrap">
+        <div class="logo">⚔️</div>
 
-<a href="affiliate.html" class="affiliate-link">
-🤝 Affiliate
-</a>
+        <h1>AJRA CHECKBOT</h1>
 
-</div>
+        <p class="sub">Search Username atau IGG ID</p>
+      </div>
 
-<div class="scroll-hint">
+      <div class="search-box">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Masukkan Username / IGG ID"
+        />
 
-    <span>← Geser →</span>
+        <button id="searchBtn">SEARCH</button>
+      </div>
 
-</div>
+      <div id="loading" class="loading hidden">Searching...</div>
 
-</div>
+      <div id="promoModal" class="promo-modal hidden">
+        <div class="promo-box">
+          <button id="closePromo" class="close-btn">✕</button>
 
-<div class="logo-wrap">
+          <div class="promo-title">🎉 PROMO PERPANJANGAN BOT BULAN JUNI</div>
 
-<div class="logo">
-⚔️
-</div>
+          <div class="promo-text">
+            ⚔️ 1 TAHUN :
+            <b>RP170.000</b>
+          </div>
 
-<h1>AJRA CHECKBOT</h1>
+          <div class="promo-text">
+            👑 PERMANEN :
+            <b>RP350.000</b>
+          </div>
 
-<p class="sub">
-Search Username atau IGG ID
-</p>
+          <a
+            href="https://wa.me/6285885385659"
+            target="_blank"
+            class="promo-wa"
+          >
+            💬 WHATSAPP ADMIN
+          </a>
+        </div>
+      </div>
 
-</div>
-
-  <div class="search-box">
-
-    <input
-      type="text"
-      id="searchInput"
-      placeholder="Masukkan Username / IGG ID"
-    />
-
-    <button id="searchBtn">
-      SEARCH
-    </button>
-
-  </div>
-
-  <div 
-  id="loading"
-  class="loading hidden">
-
-      Searching...
-  </div>
-
-<div
-id="promoModal"
-class="promo-modal hidden">
-
-  <div class="promo-box">
-
-    <button
-    id="closePromo"
-    class="close-btn">
-    ✕
-    </button>
-
-    <div class="promo-title">
-      🎉 PROMO PERPANJANGAN BOT BULAN JUNI
+      <div id="result"></div>
     </div>
 
-    <div class="promo-text">
-      ⚔️ 1 TAHUN :
-      <b>RP170.000</b>
-    </div>
-
-    <div class="promo-text">
-      👑 PERMANEN :
-      <b>RP350.000</b>
-    </div>
-
-    <a
-    href="https://wa.me/6285885385659"
-    target="_blank"
-    class="promo-wa">
-
-    💬 WHATSAPP ADMIN
-
-    </a>
-
-  </div>
-
-</div>
-
-<div id="result"></div>
-
-</div>
-
-<script
-type="module"
-src="script.js">
-</script>
-
-</body>
+    <script type="module" src="script.js"></script>
+  </body>
 </html>

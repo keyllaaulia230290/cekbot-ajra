@@ -54,7 +54,7 @@ function updateTotal() {
 
   const promo = promoInput.value.trim().toUpperCase();
 
-  if (promo === "HAPPYJUNE") {
+  if (promo === "HAPPYJULY") {
     promoDiscount = Math.floor(finalPrice * 0.1);
 
     finalPrice -= promoDiscount;
@@ -167,7 +167,7 @@ orderBtn.addEventListener("click", async () => {
 
   const promo = promoInput.value.trim().toUpperCase();
 
-  if (promo === "HAPPYJUNE") {
+  if (promo === "HAPPYJULY") {
     promoDiscount = Math.floor(finalPrice * 0.1);
 
     finalPrice -= promoDiscount;

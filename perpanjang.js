@@ -8,29 +8,20 @@ let affiliateDiscount = 0;
 let referralValid = false;
 
 if (referralCode) {
+  const snap = await get(ref(db, "affiliates"));
 
-    const snap = await get(ref(db, "affiliates"));
+  if (snap.exists()) {
+    const affiliates = snap.val();
 
-    if (snap.exists()) {
+    Object.values(affiliates).forEach((item) => {
+      if (item.referralCode === referralCode) {
+        referralValid = true;
+      }
+    });
+  }
 
-        const affiliates = snap.val();
-
-        Object.values(affiliates).forEach((item) => {
-
-            if (item.referralCode === referralCode) {
-
-                referralValid = true;
-
-            }
-
-        });
-
-    }
-
-    console.log("Referral Valid :", referralValid);
-
+  console.log("Referral Valid :", referralValid);
 }
-
 
 const checkBotBtn = document.getElementById("checkBotBtn");
 
@@ -66,21 +57,19 @@ paketBtns.forEach((btn) => {
 function updateTotal() {
   const promo = document.getElementById("promo").value.trim().toUpperCase();
 
-let finalPrice = selectedPrice;
+  let finalPrice = selectedPrice;
 
-// Promo HAPPYJULY
-if (promo === "HAPPYJULY") {
-    finalPrice = Math.floor(finalPrice * 0.9);
-}
+  // Promo HAPPYJULY
+  if (promo === "HAPPYJULY") {
+    finalPrice = Math.floor(finalPrice * 0.7);
+  }
 
-// Diskon Affiliate 5%
-if (referralValid) {
-
+  // Diskon Affiliate 5%
+  if (referralValid) {
     affiliateDiscount = Math.floor(finalPrice * 0.05);
 
     finalPrice -= affiliateDiscount;
-
-}
+  }
 
   document.getElementById("invoicePaket").innerText =
     selectedPackage || "Belum Dipilih";
@@ -131,19 +120,18 @@ document.getElementById("orderBtn").addEventListener("click", async () => {
 
     const orderRef = push(ref(db, "orders"));
 
-let finalPrice = selectedPrice;
+    let finalPrice = selectedPrice;
 
-if (promoInput.value.trim().toUpperCase() === "HAPPYJULY") {
-    finalPrice = Math.floor(finalPrice * 0.9);
-}
+    if (promoInput.value.trim().toUpperCase() === "HAPPYJULY") {
+      finalPrice = Math.floor(finalPrice * 0.7);
+    }
 
-if (referralValid) {
-    affiliateDiscount = Math.floor(finalPrice * 0.05);
-    finalPrice -= affiliateDiscount;
-}
+    if (referralValid) {
+      affiliateDiscount = Math.floor(finalPrice * 0.05);
+      finalPrice -= affiliateDiscount;
+    }
 
-await set(orderRef, {
-
+    await set(orderRef, {
       username,
 
       whatsapp,
@@ -156,17 +144,14 @@ await set(orderRef, {
 
       diskonAffiliate: affiliateDiscount,
 
-      referralCode : referralValid ? referralCode : null,
+      referralCode: referralValid ? referralCode : null,
 
       payment: selectedPayment || "QRIS",
 
       status: "PENDING",
 
       createdAt: Date.now(),
-
-      
-
-});
+    });
 
     showToast("Pesanan berhasil dibuat", "success");
 

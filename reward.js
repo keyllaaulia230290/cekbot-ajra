@@ -146,6 +146,7 @@ async function loadRewards() {
 }
 
 window.claimReward = async function (level, reward) {
+  alert("VERSI BARU BERJALAN");
   const iggid = prompt("Masukkan IGG ID Aktif");
 
   if (!iggid) return;

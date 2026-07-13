@@ -1,116 +1,73 @@
-import {
-  db,
-  ref,
-  push,
-  set,
-  get,
-  child
-} from "./firebase/config.js";
+import { db, ref, push, set, get, child } from "./firebase/config.js";
 
 const rewards = [
-
   {
     target: 200,
     reward: "200K Gems By Gift",
     winner: 2,
-    image: "images/reward200.png"
+    image: "images/reward200.png",
   },
 
   {
     target: 400,
     reward: "1M Gems By Gift",
     winner: 5,
-    image: "images/reward400.png"
+    image: "images/reward400.png",
   },
 
   {
     target: 600,
     reward: "1M Gems By Gift",
     winner: 7,
-    image: "images/reward600.png"
+    image: "images/reward600.png",
   },
 
   {
     target: 800,
     reward: "2M Gems By Gift",
     winner: 5,
-    image: "images/reward800.png"
+    image: "images/reward800.png",
   },
 
   {
     target: 1000,
     reward: "2M Gems By Gift",
     winner: 7,
-    image: "images/reward1000.png"
-  }
-
+    image: "images/reward1000.png",
+  },
 ];
 
-const container =
-document.getElementById(
-  "rewardContainer"
-);
+const container = document.getElementById("rewardContainer");
 
-const activeUsers =
-document.getElementById(
-  "activeUsers"
-);
+const activeUsers = document.getElementById("activeUsers");
 
 loadRewards();
 
 async function loadRewards() {
+  const botSnapshot = await get(child(ref(db), "bots"));
 
-  const botSnapshot =
-  await get(
-    child(
-      ref(db),
-      "bots"
-    )
-  );
+  const claimSnapshot = await get(child(ref(db), "rewardClaims"));
 
-  const claimSnapshot =
-  await get(
-    child(
-      ref(db),
-      "rewardClaims"
-    )
-  );
+  const bots = botSnapshot.val() || {};
 
-  const bots =
-  botSnapshot.val() || {};
+  const claims = claimSnapshot.val() || {};
 
-  const claims =
-  claimSnapshot.val() || {};
+  const totalUsers = Object.keys(bots).length;
 
-  const totalUsers =
-  Object.keys(bots).length;
-
-  activeUsers.innerHTML =
-  `👥 Pengguna Aktif : ${totalUsers}/1000`;
+  activeUsers.innerHTML = `👥 Pengguna Aktif : ${totalUsers}/1000`;
 
   container.innerHTML = "";
 
   rewards.forEach((level, index) => {
+    const percent = Math.min((totalUsers / level.target) * 100, 100);
 
-    const percent =
-    Math.min(
-      (totalUsers / level.target) * 100,
-      100
-    );
+    const unlocked = totalUsers >= level.target;
 
-    const unlocked =
-    totalUsers >= level.target;
+    const claimCount = Object.values(claims).filter(
+      (claim) => claim.level === level.target,
+    ).length;
 
-    const claimCount =
-    Object.values(claims)
-    .filter(
-      claim =>
-      claim.level === level.target
-    )
-    .length;
-
-    const soldOut =
-    claimCount >= level.winner;
+    const soldOut = claimCount >= level.winner;
 
     container.innerHTML += `
 
@@ -153,14 +110,12 @@ async function loadRewards() {
 
       ${
         soldOut
-        ?
-        `
+          ? `
         <div class="soldOut">
           ❌ HABIS DITUKAR
         </div>
         `
-        :
-        `
+          : `
         <button
         class="
         claimBtn
@@ -178,11 +133,7 @@ async function loadRewards() {
 
         >
 
-        ${
-          unlocked
-          ? "🎁 Klaim Hadiah"
-          : "🔒 Belum Terbuka"
-        }
+        ${unlocked ? "🎁 Klaim Hadiah" : "🔒 Belum Terbuka"}
 
         </button>
         `
@@ -191,185 +142,109 @@ async function loadRewards() {
     </div>
 
     `;
-
   });
-
 }
 
-window.claimReward =
-async function (
-  level,
-  reward
-) {
-
-  const iggid =
-  prompt(
-    "Masukkan IGG ID Aktif"
-  );
+window.claimReward = async function (level, reward) {
+  const iggid = prompt("Masukkan IGG ID Aktif");
 
   if (!iggid) return;
 
-  const botSnapshot =
-  await get(
-    child(
-      ref(db),
-      "bots"
-    )
-  );
+  const botSnapshot = await get(child(ref(db), "bots"));
 
-  const bots =
-  botSnapshot.val() || {};
+  const bots = botSnapshot.val() || {};
 
-let validBot = false;
+  let validBot = false;
 
-let selectedBot = null;
+  let selectedBot = null;
 
-Object.keys(bots).forEach(key => {
+  Object.keys(bots).forEach((key) => {
+    if (bots[key].iggid?.toString() === iggid) {
+      validBot = true;
 
-  if (
-    bots[key].iggid?.toString() === iggid
-  ) {
-
-    validBot = true;
-
-    selectedBot = bots[key];
-
-  }
-
-});
+      selectedBot = bots[key];
+    }
+  });
 
   if (!validBot) {
-
-    alert(
-      "IGG ID tidak terdaftar di Bot AjraStore"
-    );
+    alert("IGG ID tidak terdaftar di Bot AjraStore");
 
     return;
-
   }
 
   // ==========================
-// CEK BOT MASIH AKTIF
-// ==========================
+  // CEK BOT MASIH AKTIF
+  // ==========================
 
-const split = selectedBot.expired.split("/");
+  const [day, month, year] = selectedBot.expired.split("/").map(Number);
 
-const expiredDate = new Date(
-  split[2],
-  split[1] - 1,
-  split[0]
-);
+  const expiredTime = new Date(year, month - 1, day, 23, 59, 59).getTime();
 
-const today = new Date();
+  const nowTime = Date.now();
 
-today.setHours(0,0,0,0);
-expiredDate.setHours(0,0,0,0);
-
-if (expiredDate < today) {
-
- showToast(
-"❌ <b>Bot sudah expired.</b><br>Silakan lakukan perpanjangan terlebih dahulu.",
-"error"
-);
-
-  return;
-
-}
-
-  const claimSnapshot =
-  await get(
-    child(
-      ref(db),
-      "rewardClaims"
-    )
-  );
-
-  const claims =
-  claimSnapshot.val() || {};
-
-  let alreadyClaim = false;
-
-  Object.keys(claims)
-  .forEach(key => {
-
-    const claim =
-    claims[key];
-
-    if (
-      claim.iggid === iggid &&
-      claim.level === level
-    ) {
-
-      alreadyClaim = true;
-
-    }
-
-  });
-
-  if (alreadyClaim) {
-
-    alert(
-      "Kamu sudah klaim reward ini"
+  if (nowTime > expiredTime) {
+    showToast(
+      "❌ <b>Bot sudah expired.</b><br>Silakan lakukan perpanjangan terlebih dahulu.",
+      "error",
     );
 
     return;
-
   }
 
-  const newClaim =
-  push(
-    ref(
-      db,
-      "rewardClaims"
-    )
-  );
+  const claimSnapshot = await get(child(ref(db), "rewardClaims"));
 
-  await set(
-    newClaim,
-    {
-      iggid,
-      level,
-      reward,
-      date:
-      new Date()
-      .toLocaleDateString()
+  const claims = claimSnapshot.val() || {};
+
+  let alreadyClaim = false;
+
+  Object.keys(claims).forEach((key) => {
+    const claim = claims[key];
+
+    if (claim.iggid === iggid && claim.level === level) {
+      alreadyClaim = true;
     }
-  );
+  });
 
-  const text =
-  encodeURIComponent(
+  if (alreadyClaim) {
+    alert("Kamu sudah klaim reward ini");
 
-`Halo Admin
+    return;
+  }
+
+  const newClaim = push(ref(db, "rewardClaims"));
+
+  await set(newClaim, {
+    iggid,
+    level,
+    reward,
+    date: new Date().toLocaleDateString(),
+  });
+
+  const text = encodeURIComponent(
+    `Halo Admin
 
 Saya ingin klaim hadiah.
 
 Level : ${level}
 Reward : ${reward}
-IGG ID : ${iggid}`
-
+IGG ID : ${iggid}`,
   );
 
-  window.location.href =
-  `https://wa.me/6285885385659?text=${text}`;
-
+  window.location.href = `https://wa.me/6285885385659?text=${text}`;
 };
 
-function showToast(message,type="info"){
+function showToast(message, type = "info") {
+  const toast = document.getElementById("toast");
 
-const toast=document.getElementById("toast");
+  toast.className = "";
 
-toast.className="";
+  toast.classList.add(type);
 
-toast.classList.add(type);
+  toast.classList.add("show");
 
-toast.classList.add("show");
+  toast.innerHTML = message;
 
-toast.innerHTML=message;
-
-setTimeout(()=>{
-
-toast.classList.remove("show");
-
-},3500);
-
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3500);
 }

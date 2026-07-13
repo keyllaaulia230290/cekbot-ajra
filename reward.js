@@ -220,22 +220,23 @@ async function (
   const bots =
   botSnapshot.val() || {};
 
-  let validBot = false;
+let validBot = false;
 
-  Object.keys(bots)
-  .forEach(key => {
+let selectedBot = null;
 
-    if (
-      bots[key].iggid
-      ?.toString()
-      === iggid
-    ) {
+Object.keys(bots).forEach(key => {
 
-      validBot = true;
+  if (
+    bots[key].iggid?.toString() === iggid
+  ) {
 
-    }
+    validBot = true;
 
-  });
+    selectedBot = bots[key];
+
+  }
+
+});
 
   if (!validBot) {
 
@@ -246,6 +247,34 @@ async function (
     return;
 
   }
+
+  // ==========================
+// CEK BOT MASIH AKTIF
+// ==========================
+
+const split = selectedBot.expired.split("/");
+
+const expiredDate = new Date(
+  split[2],
+  split[1] - 1,
+  split[0]
+);
+
+const today = new Date();
+
+today.setHours(0,0,0,0);
+expiredDate.setHours(0,0,0,0);
+
+if (expiredDate < today) {
+
+ showToast(
+"❌ <b>Bot sudah expired.</b><br>Silakan lakukan perpanjangan terlebih dahulu.",
+"error"
+);
+
+  return;
+
+}
 
   const claimSnapshot =
   await get(
@@ -324,3 +353,23 @@ IGG ID : ${iggid}`
   `https://wa.me/6285885385659?text=${text}`;
 
 };
+
+function showToast(message,type="info"){
+
+const toast=document.getElementById("toast");
+
+toast.className="";
+
+toast.classList.add(type);
+
+toast.classList.add("show");
+
+toast.innerHTML=message;
+
+setTimeout(()=>{
+
+toast.classList.remove("show");
+
+},3500);
+
+}

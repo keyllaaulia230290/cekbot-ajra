@@ -61,7 +61,7 @@ function updateTotal() {
 
   // Promo HAPPYJULY
   if (promo === "HAPPYJULY") {
-    finalPrice = Math.floor(finalPrice * 0.7);
+    finalPrice = Math.floor(finalPrice * 0.9);
   }
 
   // Diskon Affiliate 5%
@@ -123,7 +123,7 @@ document.getElementById("orderBtn").addEventListener("click", async () => {
     let finalPrice = selectedPrice;
 
     if (promoInput.value.trim().toUpperCase() === "HAPPYJULY") {
-      finalPrice = Math.floor(finalPrice * 0.7);
+      finalPrice = Math.floor(finalPrice * 0.9);
     }
 
     if (referralValid) {

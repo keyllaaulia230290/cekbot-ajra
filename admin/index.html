@@ -1,252 +1,137 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
 
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>AJRA Admin</title>
+    <title>AJRA Admin</title>
 
-<link
-rel="stylesheet"
-href="admin.css">
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div id="loginBox" class="glass">
+        <div class="logo">⚔️</div>
 
-</head>
-<body>
-
-<div class="container">
-
-<div id="loginBox"
-class="glass">
-
-<div class="logo">
-⚔️
-</div>
-
-<h1>AJRA ADMIN</h1>
-
-<p class="sub">
-Admin Login
-</p>
-
-<input
-type="text"
-id="username"
-placeholder="Email">
-
-<input
-type="password"
-id="password"
-placeholder="Password">
-
-<button id="loginBtn">
-LOGIN
-</button>
-
-</div>
-
-<div id="dashboard"
-class="hidden">
-
-<div class="stats-box">
+        <h1>AJRA ADMIN</h1>
 
-<div class="stat-card">
-👥
-<span id="totalUsers">
-0
-</span>
-<p>Total User</p>
-</div>
+        <p class="sub">Admin Login</p>
 
-<div class="stat-card">
-🟢
-<span id="activeUsers">
-0
-</span>
-<p>Aktif</p>
-</div>
+        <input type="text" id="username" placeholder="Email" />
 
-<div class="stat-card">
-🔴
-<span id="inactiveUsers">
-0
-</span>
-<p>Nonaktif</p>
-</div>
+        <input type="password" id="password" placeholder="Password" />
 
-<div class="stat-card">
-🎁
-<span id="eventUsers">
-0
-</span>
-<p>Menuju 1000</p>
-</div>
+        <button id="loginBtn">LOGIN</button>
+      </div>
 
-</div>
+      <div id="dashboard" class="hidden">
+        <div class="stats-box">
+          <div class="stat-card">
+            👥
+            <span id="totalUsers"> 0 </span>
+            <p>Total User</p>
+          </div>
 
-<div class="topbar">
+          <div class="stat-card">
+            🟢
+            <span id="activeUsers"> 0 </span>
+            <p>Aktif</p>
+          </div>
 
-<h1>
-⚔️ AJRA DASHBOARD
-</h1>
+          <div class="stat-card">
+            🔴
+            <span id="inactiveUsers"> 0 </span>
+            <p>Nonaktif</p>
+          </div>
 
-<button id="logoutBtn"
-class="logout">
-Logout
-</button>
+          <div class="stat-card">
+            🎁
+            <span id="eventUsers"> 0 </span>
+            <p>Menuju 1000</p>
+          </div>
+        </div>
 
-</div>
+        <div class="topbar">
+          <h1>⚔️ AJRA DASHBOARD</h1>
 
-<div class="glass form-card">
+          <button id="logoutBtn" class="logout">Logout</button>
+        </div>
 
-<input
-type="text"
-id="customer"
-placeholder="Customer">
+        <div class="glass form-card">
+          <input type="text" id="customer" placeholder="Customer" />
 
-<input
-type="text"
-id="botUsername"
-placeholder="Username Bot">
+          <input type="text" id="botUsername" placeholder="Username Bot" />
 
-<input
-type="text"
-id="iggid"
-placeholder="IGG ID">
+          <input type="text" id="iggid" placeholder="IGG ID" />
 
-<input
-type="text"
-id="server"
-placeholder="Server">
+          <input type="text" id="server" placeholder="Server" />
 
-<input
-type="text"
-id="expired"
-placeholder="Expired">
+          <input type="text" id="expired" placeholder="Expired" />
 
-<select id="status">
-<option>AKTIF</option>
-<option>NONAKTIF</option>
-</select>
+          <select id="status">
+            <option>AKTIF</option>
+            <option>NONAKTIF</option>
+          </select>
 
-<button id="saveBtn">
-Tambah Data
-</button>
+          <button id="saveBtn">Tambah Data</button>
+        </div>
 
-</div>
+        <h2 class="list-title">Bot List</h2>
 
-<h2 class="list-title">
-Bot List
-</h2>
+        <button id="exportExcelBtn" class="edit-btn">Export Excel</button>
 
-<button id="exportExcelBtn" class="edit-btn">
-Export Excel
-</button>
+        <h2 class="list-title">Reward Claims</h2>
 
-<h2 class="list-title">
-Reward Claims
-</h2>
+        <div id="claimList"></div>
 
-<div id="claimList">
+        <input
+          type="text"
+          id="searchBot"
+          placeholder="🔍 Cari username / customer / IGG ID"
+          class="search-admin"
+        />
 
-</div>
+        <div id="botList"></div>
 
-<input
-type="text"
-id="searchBot"
-placeholder="🔍 Cari username / customer / IGG ID"
-class="search-admin">
+        <h2 class="list-title">📦 Order Masuk</h2>
 
-<div id="botList">
-</div>
+        <select id="orderFilter">
+          <option value="ALL">Semua Order</option>
 
-<h2 class="list-title">
-📦 Order Masuk
-</h2>
+          <option value="PENDING">Pending</option>
 
-<select id="orderFilter">
+          <option value="SELESAI">Selesai</option>
 
-<option value="ALL">
-Semua Order
-</option>
+          <option value="BATAL">Batal</option>
+        </select>
 
-<option value="PENDING">
-Pending
-</option>
+        <div id="orderList"></div>
 
-<option value="SELESAI">
-Selesai
-</option>
+        <h2 class="list-title">🤖 Order Pasang Bot</h2>
 
-<option value="BATAL">
-Batal
-</option>
+        <div id="botOrderList">
+          <h2 class="list-title">💸 Request Withdraw</h2>
 
-</select>
+          <div id="withdrawRequestList">
+            <div class="notfound">Belum ada request withdraw</div>
+          </div>
 
-<div id="orderList">
-</div>
+          <div class="notfound">Belum ada order bot</div>
+        </div>
 
-<h2 class="list-title">
+        <div class="pagination">
+          <button id="prevPage">← Prev</button>
 
-🤖 Order Pasang Bot
+          <span id="pageInfo"> Page 1 </span>
 
-</h2>
+          <button id="nextPage">Next →</button>
+        </div>
+      </div>
+    </div>
 
-<div id="botOrderList">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
-    <h2 class="list-title">
-
-💸 Request Withdraw
-
-</h2>
-
-<div id="withdrawRequestList">
-
-<div class="notfound">
-
-Belum ada request withdraw
-
-</div>
-
-</div>
-
-<div class="notfound">
-
-Belum ada order bot
-
-</div>
-
-</div>
-
-<div class="pagination">
-
-<button id="prevPage">
-← Prev
-</button>
-
-<span id="pageInfo">
-Page 1
-</span>
-
-<button id="nextPage">
-Next →
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-<script src="https://cdn.jsdeliver.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-
-<script
-type="module"
-src="admin.js">
-</script>
-
-</body>
+    <script type="module" src="admin.js"></script>
+  </body>
 </html>

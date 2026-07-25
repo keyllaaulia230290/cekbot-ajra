@@ -30,6 +30,8 @@ const orderList = document.getElementById("orderList");
 
 const botOrderList = document.getElementById("botOrderList");
 
+const exportExcelBtn = document.getElementById("exportExcelBtn");
+
 const withdrawRequestList = document.getElementById("withdrawRequestList");
 
 const orderFilter = document.getElementById("orderFilter");
@@ -517,13 +519,10 @@ BATAL
 }
 
 function loadBotOrders() {
-
   onValue(ref(db, "ordersBot"), (snapshot) => {
-
     botOrderList.innerHTML = "";
 
     if (!snapshot.exists()) {
-
       botOrderList.innerHTML = `
 <div class="notfound">
 Belum ada order bot
@@ -538,7 +537,6 @@ Belum ada order bot
     Object.keys(orders)
       .reverse()
       .forEach((key) => {
-
         const order = orders[key];
 
         botOrderList.innerHTML += `
@@ -594,21 +592,15 @@ BATAL
 </div>
 
 `;
-
       });
-
   });
-
 }
 
 function loadWithdrawRequests() {
-
   onValue(ref(db, "withdrawRequests"), (snapshot) => {
-
     withdrawRequestList.innerHTML = "";
 
     if (!snapshot.exists()) {
-
       withdrawRequestList.innerHTML = `
 <div class="notfound">
 Belum ada request withdraw
@@ -616,7 +608,6 @@ Belum ada request withdraw
 `;
 
       return;
-
     }
 
     const requests = snapshot.val();
@@ -624,7 +615,6 @@ Belum ada request withdraw
     Object.keys(requests)
       .reverse()
       .forEach((key) => {
-
         const item = requests[key];
 
         withdrawRequestList.innerHTML += `
@@ -684,11 +674,8 @@ TOLAK
 </div>
 
 `;
-
       });
-
   });
-
 }
 
 window.finishOrder = async (id) => {
@@ -808,7 +795,6 @@ window.finishOrder = async (id) => {
 };
 
 window.finishBotOrder = async (id) => {
-
   const orderSnap = await get(ref(db, "ordersBot/" + id));
 
   if (!orderSnap.exists()) return;
@@ -824,54 +810,40 @@ window.finishBotOrder = async (id) => {
   let komisi = 0;
 
   if (order.referralCode) {
-
     const affiliateSnap = await get(ref(db, "affiliates"));
 
     if (affiliateSnap.exists()) {
-
       const affiliates = affiliateSnap.val();
 
       for (const uid in affiliates) {
-
         const affiliate = affiliates[uid];
 
         if (affiliate.referralCode === order.referralCode) {
-
           affiliateUid = uid;
           affiliateData = affiliate;
 
-          komisi = Math.floor((order.total || order.harga) * 0.10);
+          komisi = Math.floor((order.total || order.harga) * 0.1);
 
           await update(ref(db, "affiliates/" + uid), {
-
             pending: (affiliate.pending || 0) + komisi,
 
-            totalReferral: (affiliate.totalReferral || 0) + 1
-
+            totalReferral: (affiliate.totalReferral || 0) + 1,
           });
 
           break;
-
         }
-
       }
-
     }
-
   }
 
   await update(ref(db, "ordersBot/" + id), {
-
-    status: "SELESAI"
-
+    status: "SELESAI",
   });
 
   if (affiliateUid) {
-
     const historyRef = push(ref(db, "affiliateHistory"));
 
     await set(historyRef, {
-
       affiliateUid,
 
       referralCode: affiliateData.referralCode,
@@ -882,28 +854,20 @@ window.finishBotOrder = async (id) => {
 
       komisi,
 
-      createdAt: Date.now()
-
+      createdAt: Date.now(),
     });
-
   }
 
   alert("Order Pasang Bot selesai.");
-
 };
 
 window.cancelBotOrder = async (id) => {
-
   await update(ref(db, "ordersBot/" + id), {
-
-    status: "BATAL"
-
+    status: "BATAL",
   });
-
 };
 
 window.approveWithdraw = async (id) => {
-
   const requestSnap = await get(ref(db, "withdrawRequests/" + id));
 
   if (!requestSnap.exists()) return;
@@ -911,11 +875,9 @@ window.approveWithdraw = async (id) => {
   const request = requestSnap.val();
 
   if (request.status === "SELESAI") {
-
     alert("Request sudah diproses.");
 
     return;
-
   }
 
   const affiliateRef = ref(db, "affiliates/" + request.affiliateUid);
@@ -923,11 +885,9 @@ window.approveWithdraw = async (id) => {
   const affiliateSnap = await get(affiliateRef);
 
   if (!affiliateSnap.exists()) {
-
     alert("Affiliate tidak ditemukan.");
 
     return;
-
   }
 
   const affiliate = affiliateSnap.val();
@@ -937,33 +897,25 @@ window.approveWithdraw = async (id) => {
   const withdraw = affiliate.withdraw || 0;
 
   if (pending < request.nominal) {
-
     alert("Saldo pending tidak mencukupi.");
 
     return;
-
   }
 
   await update(affiliateRef, {
-
     pending: pending - request.nominal,
 
-    withdraw: withdraw + request.nominal
-
+    withdraw: withdraw + request.nominal,
   });
 
   await update(ref(db, "withdrawRequests/" + id), {
-
-    status: "SELESAI"
-
+    status: "SELESAI",
   });
 
   alert("Withdraw berhasil diproses.");
-
 };
 
 window.rejectWithdraw = async (id) => {
-
   const requestSnap = await get(ref(db, "withdrawRequests/" + id));
 
   if (!requestSnap.exists()) return;
@@ -971,21 +923,16 @@ window.rejectWithdraw = async (id) => {
   const request = requestSnap.val();
 
   if (request.status !== "PENDING") {
-
     alert("Request sudah diproses.");
 
     return;
-
   }
 
   await update(ref(db, "withdrawRequests/" + id), {
-
-    status: "DITOLAK"
-
+    status: "DITOLAK",
   });
 
   alert("Request ditolak.");
-
 };
 
 window.cancelOrder = async (id) => {
@@ -1006,4 +953,41 @@ function onetime() {
       },
     );
   });
+}
+
+exportExcelBtn.addEventListener("click", exportBotsToExcel);
+
+async function exportBotsToExcel() {
+  const snapshot = await get(ref(db, "bots"));
+
+  if (!snapshot.exists()) {
+    alert("Tidak ada data bot.");
+    return;
+  }
+
+  const bots = snapshot.val();
+
+  const data = [];
+
+  let no = 1;
+
+  Object.values(bots).forEach((bot) => {
+    data.push({
+      No: no++,
+      Customer: bot.customer,
+      Username: bot.username,
+      "IGG ID": bot.iggid,
+      Server: bot.server,
+      Expired: bot.expired,
+      Status: bot.status,
+    });
+  });
+
+  const worksheet = XLSX.utils.json_to_sheet(data);
+
+  const workbook = XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Data Bot");
+
+  XLSX.writeFile(workbook, "Data_Bot_AJRA.xlsx");
 }

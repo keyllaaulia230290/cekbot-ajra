@@ -10,8 +10,26 @@ const packageCards = document.querySelectorAll(".package");
 
 let selectedPrice = 0;
 let selectedPackage = "";
-let selectedPayment = "QRIS";
 let selectedQuantity = 1;
+let selectedPayment = "QRIS";
+
+function selectPackage(card) {
+  packageCards.forEach((c) => {
+    c.classList.remove("active");
+  });
+
+  card.classList.add("active");
+
+  selectedPackage = card.dataset.package;
+
+  selectedQuantity = Number(card.dataset.quantity || 1);
+
+  const hargaSatuan = Number(card.dataset.price || 0);
+
+  selectedPrice = hargaSatuan * selectedQuantity;
+
+  updateTotal();
+}
 
 packageCards.forEach((card) => {
   const plusBtn = card.querySelector(".plus");
@@ -19,37 +37,24 @@ packageCards.forEach((card) => {
   const quantityElement = card.querySelector(".quantity");
   const subtotalElement = card.querySelector(".subtotal");
 
-  const isPermanent = card.dataset.package === "Permanent";
-  const unitPrice = Number(card.dataset.price);
+  const hargaSatuan = Number(card.dataset.price || 0);
 
-  function selectPackage() {
-    packageCards.forEach((c) => {
-      c.classList.remove("active");
-    });
-
-    card.classList.add("active");
-
-    selectedPackage = card.dataset.package;
-    selectedQuantity = Number(card.dataset.quantity || 1);
-    selectedPrice = unitPrice * selectedQuantity;
-
-    updateTotal();
-  }
-
+  // Klik kartu
   card.addEventListener("click", (e) => {
     if (e.target.closest(".qty-btn")) {
       return;
     }
 
-    selectPackage();
+    selectPackage(card);
   });
 
+  // Tombol +
   if (plusBtn) {
     plusBtn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
 
-      if (isPermanent) {
+      if (card.dataset.package === "Permanent") {
         return;
       }
 
@@ -58,15 +63,17 @@ packageCards.forEach((card) => {
       quantity++;
 
       card.dataset.quantity = quantity;
+
       quantityElement.textContent = quantity;
 
       subtotalElement.textContent =
-        "Rp" + (unitPrice * quantity).toLocaleString("id-ID");
+        "Rp" + (hargaSatuan * quantity).toLocaleString("id-ID");
 
-      selectPackage();
+      selectPackage(card);
     });
   }
 
+  // Tombol -
   if (minusBtn) {
     minusBtn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -81,12 +88,13 @@ packageCards.forEach((card) => {
       quantity--;
 
       card.dataset.quantity = quantity;
+
       quantityElement.textContent = quantity;
 
       subtotalElement.textContent =
-        "Rp" + (unitPrice * quantity).toLocaleString("id-ID");
+        "Rp" + (hargaSatuan * quantity).toLocaleString("id-ID");
 
-      selectPackage();
+      selectPackage(card);
     });
   }
 });
@@ -114,32 +122,48 @@ function updateTotal() {
 
   const promo = promoInput.value.trim().toUpperCase();
 
+  // Diskon quantity
+  let quantityDiscount = 0;
+
+  if (selectedQuantity >= 5 && selectedPackage === "1 Bulan") {
+    quantityDiscount = Math.floor(finalPrice * 0.1);
+    finalPrice -= quantityDiscount;
+  } else if (selectedQuantity >= 2 && selectedPackage === "1 Bulan") {
+    quantityDiscount = Math.floor(finalPrice * 0.05);
+    finalPrice -= quantityDiscount;
+  }
+
+  // Promo
   if (promo === "HAPPYJULY") {
     promoDiscount = Math.floor(finalPrice * 0.1);
-
     finalPrice -= promoDiscount;
   }
 
+  // Affiliate
   if (referralCode) {
     affiliateDiscount = Math.floor(finalPrice * 0.05);
-
     finalPrice -= affiliateDiscount;
   }
 
-  document.getElementById("invoicePaket").innerText =
-    selectedPackage || "Belum Dipilih";
+  const invoicePaket = document.getElementById("invoicePaket");
+  const invoiceHarga = document.getElementById("invoiceHarga");
+  const promoDiscountElement = document.getElementById("promoDiscount");
+  const affiliateDiscountElement = document.getElementById("affiliateDiscount");
+  const totalHarga = document.getElementById("totalHarga");
 
-  document.getElementById("invoiceHarga").innerText =
-    "Rp" + selectedPrice.toLocaleString("id-ID");
+  invoicePaket.innerText = selectedPackage
+    ? `${selectedPackage} × ${selectedQuantity}`
+    : "Belum Dipilih";
 
-  document.getElementById("promoDiscount").innerText =
-    "-Rp" + promoDiscount.toLocaleString("id-ID");
+  invoiceHarga.innerText = "Rp" + selectedPrice.toLocaleString("id-ID");
 
-  document.getElementById("affiliateDiscount").innerText =
+  promoDiscountElement.innerText =
+    "-Rp" + (promoDiscount + quantityDiscount).toLocaleString("id-ID");
+
+  affiliateDiscountElement.innerText =
     "-Rp" + affiliateDiscount.toLocaleString("id-ID");
 
-  document.getElementById("totalHarga").innerText =
-    "Rp" + finalPrice.toLocaleString("id-ID");
+  totalHarga.innerText = "Rp" + finalPrice.toLocaleString("id-ID");
 }
 
 const orderBtn = document.getElementById("orderBtn");
@@ -357,8 +381,8 @@ Quantity : ${selectedQuantity}
 
 Harga Satuan :
 Rp${Number(
-  document.querySelector(".package.active")?.dataset.price || 0
-).toLocaleString("id-ID")}
+      document.querySelector(".package.active")?.dataset.price || 0,
+    ).toLocaleString("id-ID")}
 
 Subtotal :
 Rp${selectedPrice.toLocaleString("id-ID")}

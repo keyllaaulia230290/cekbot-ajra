@@ -425,16 +425,30 @@ ${referralCode || "-"}
 
 Terima kasih 🙏`);
 
-    localStorage.setItem(
-      "lastOrder",
-      JSON.stringify({
-        username: nickname,
+localStorage.setItem(
+  "lastOrder",
+  JSON.stringify({
+    username: nickname,
 
-        paket: selectedPackage,
+    paket: selectedPackage,
 
-        harga: finalPrice,
-      }),
-    );
+    quantity: selectedQuantity,
+
+    hargaSatuan: Number(
+      document.querySelector(".package.active")?.dataset.price || 0,
+    ),
+
+    subtotal: selectedPrice,
+
+    diskonQuantity: quantityDiscount,
+
+    diskonPromo: promoDiscount,
+
+    diskonAffiliate: affiliateDiscount,
+
+    harga: finalPrice,
+  }),
+);
 
     window.open(
       "https://wa.me/6285885385659?text=" + message,

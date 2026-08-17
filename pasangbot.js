@@ -7,23 +7,22 @@ const referralCode = params.get("ref");
 let affiliateDiscount = 0;
 
 const packageCards = document.querySelectorAll(".package");
-const paymentCards = document.querySelectorAll(".payment-card");
-
-const promoInput = document.getElementById("promo");
 
 let selectedPrice = 0;
 let selectedPackage = "";
 let selectedPayment = "QRIS";
-
 let selectedQuantity = 1;
 
 packageCards.forEach((card) => {
-  card.addEventListener("click", (e) => {
-    // Jangan pilih paket kalau yang diklik tombol quantity
-    if (e.target.closest(".qty-btn")) {
-      return;
-    }
+  const plusBtn = card.querySelector(".plus");
+  const minusBtn = card.querySelector(".minus");
+  const quantityElement = card.querySelector(".quantity");
+  const subtotalElement = card.querySelector(".subtotal");
 
+  const isPermanent = card.dataset.package === "Permanent";
+  const unitPrice = Number(card.dataset.price);
+
+  function selectPackage() {
     packageCards.forEach((c) => {
       c.classList.remove("active");
     });
@@ -31,56 +30,46 @@ packageCards.forEach((card) => {
     card.classList.add("active");
 
     selectedPackage = card.dataset.package;
-
     selectedQuantity = Number(card.dataset.quantity || 1);
-
-    selectedPrice = Number(card.dataset.price) * selectedQuantity;
+    selectedPrice = unitPrice * selectedQuantity;
 
     updateTotal();
+  }
+
+  card.addEventListener("click", (e) => {
+    if (e.target.closest(".qty-btn")) {
+      return;
+    }
+
+    selectPackage();
   });
 
-  const plusBtn = card.querySelector(".plus");
-
-  const minusBtn = card.querySelector(".minus");
-
-  const quantityElement = card.querySelector(".quantity");
-
-  const subtotalElement = card.querySelector(".subtotal");
-
-  if (plusBtn && minusBtn) {
+  if (plusBtn) {
     plusBtn.addEventListener("click", (e) => {
+      e.preventDefault();
       e.stopPropagation();
+
+      if (isPermanent) {
+        return;
+      }
 
       let quantity = Number(card.dataset.quantity || 1);
 
       quantity++;
 
       card.dataset.quantity = quantity;
+      quantityElement.textContent = quantity;
 
-      quantityElement.innerText = quantity;
+      subtotalElement.textContent =
+        "Rp" + (unitPrice * quantity).toLocaleString("id-ID");
 
-      const price = Number(card.dataset.price);
-
-      subtotalElement.innerText =
-        "Rp" + (price * quantity).toLocaleString("id-ID");
-
-      // Jadikan paket aktif
-      packageCards.forEach((c) => {
-        c.classList.remove("active");
-      });
-
-      card.classList.add("active");
-
-      selectedPackage = card.dataset.package;
-
-      selectedQuantity = quantity;
-
-      selectedPrice = price * quantity;
-
-      updateTotal();
+      selectPackage();
     });
+  }
 
+  if (minusBtn) {
     minusBtn.addEventListener("click", (e) => {
+      e.preventDefault();
       e.stopPropagation();
 
       let quantity = Number(card.dataset.quantity || 1);
@@ -92,27 +81,12 @@ packageCards.forEach((card) => {
       quantity--;
 
       card.dataset.quantity = quantity;
+      quantityElement.textContent = quantity;
 
-      quantityElement.innerText = quantity;
+      subtotalElement.textContent =
+        "Rp" + (unitPrice * quantity).toLocaleString("id-ID");
 
-      const price = Number(card.dataset.price);
-
-      subtotalElement.innerText =
-        "Rp" + (price * quantity).toLocaleString("id-ID");
-
-      packageCards.forEach((c) => {
-        c.classList.remove("active");
-      });
-
-      card.classList.add("active");
-
-      selectedPackage = card.dataset.package;
-
-      selectedQuantity = quantity;
-
-      selectedPrice = price * quantity;
-
-      updateTotal();
+      selectPackage();
     });
   }
 });
@@ -379,7 +353,15 @@ Saya ingin memasang Bot Bank AJRA.
 
 Paket : ${selectedPackage}
 
-Harga : Rp${selectedPrice.toLocaleString("id-ID")}
+Quantity : ${selectedQuantity}
+
+Harga Satuan :
+Rp${Number(
+  document.querySelector(".package.active")?.dataset.price || 0
+).toLocaleString("id-ID")}
+
+Subtotal :
+Rp${selectedPrice.toLocaleString("id-ID")}
 
 Promo : ${promo || "-"}
 

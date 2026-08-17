@@ -251,78 +251,59 @@
         </div>
       </section>
 
-<section class="card">
-  <h2>💰 Pilih Paket</h2>
+      <section class="card">
+        <h2>💰 Pilih Paket</h2>
 
-  <div class="package-grid">
+        <div class="package-grid">
+          <div
+            class="package"
+            data-package="1 Bulan"
+            data-price="10000"
+            data-quantity="1"
+          >
+            <h3>1 Bulan</h3>
 
-    <!-- 1 BULAN -->
-    <div
-      class="package"
-      data-package="1 Bulan"
-      data-price="10000"
-      data-quantity="1"
-    >
+            <b>Rp10.000 / bot</b>
 
-      <h3>1 Bulan</h3>
+            <span>Garansi RSS</span>
 
-      <b>Rp10.000 / bulan</b>
+            <div class="quantity-box">
+              <button type="button" class="qty-btn minus">−</button>
 
-      <span>Garansi RSS</span>
+              <span class="quantity">1</span>
 
-      <div class="quantity-box">
+              <button type="button" class="qty-btn plus">+</button>
+            </div>
 
-        <button
-          type="button"
-          class="qty-btn minus"
-          data-type="minus"
-        >
-          −
-        </button>
+            <div class="subtotal">Rp10.000</div>
+          </div>
 
-        <span class="quantity">
-          1
-        </span>
+          <div
+            class="package premium"
+            data-package="Permanent"
+            data-price="250000"
+            data-quantity="1"
+          >
+            <div class="best">PREMIUM</div>
 
-        <button
-          type="button"
-          class="qty-btn plus"
-          data-type="plus"
-        >
-          +
-        </button>
+            <h3>Permanent</h3>
 
-      </div>
+            <b>Rp250.000 / bot</b>
 
-      <div class="package-subtotal">
-        Total: <b class="subtotal">Rp10.000</b>
-      </div>
+            <span>Garansi RSS + Gems</span>
 
-    </div>
+            <div class="quantity-box">
+              <button type="button" class="qty-btn minus">−</button>
 
+              <span class="quantity">1</span>
 
-    <!-- PERMANENT -->
-    <div
-      class="package premium"
-      data-package="Permanent"
-      data-price="250000"
-      data-quantity="1"
-    >
+              <button type="button" class="qty-btn plus" disabled>+</button>
+            </div>
 
-      <div class="best">
-        PREMIUM
-      </div>
-
-      <h3>Permanent</h3>
-
-      <b>Rp250.000</b>
-
-      <span>Garansi RSS + Gems</span>
-
-    </div>
-
-  </div>
-</section>
+            <div class="subtotal">Rp250.000</div>
+          </div>
+        </div>
+      </section>
 
       <section class="card">
         <h2>💳 Metode Pembayaran</h2>
@@ -356,7 +337,7 @@
         </div>
 
         <div class="invoice-row">
-          <span> Harga </span>
+          <span> Harga Satuan </span>
 
           <b id="invoiceHarga"> Rp0 </b>
         </div>

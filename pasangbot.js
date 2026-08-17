@@ -250,22 +250,34 @@ orderBtn.addEventListener("click", async () => {
   let finalPrice = selectedPrice;
 
   let promoDiscount = 0;
+  let quantityDiscount = 0;
 
   const promo = promoInput.value.trim().toUpperCase();
 
+  // Diskon quantity
+  if (selectedPackage === "1 Bulan") {
+    if (selectedQuantity >= 5) {
+      quantityDiscount = Math.floor(finalPrice * 0.1);
+    } else if (selectedQuantity >= 2) {
+      quantityDiscount = Math.floor(finalPrice * 0.05);
+    }
+
+    finalPrice -= quantityDiscount;
+  }
+
+  // Diskon promo
   if (promo === "HAPPYJULY") {
     promoDiscount = Math.floor(finalPrice * 0.1);
 
     finalPrice -= promoDiscount;
   }
 
+  // Diskon affiliate
   if (referralCode) {
     affiliateDiscount = Math.floor(finalPrice * 0.05);
 
     finalPrice -= affiliateDiscount;
   }
-
-  orderBtn.disabled = true;
 
   orderBtn.innerHTML = "⏳ Membuat Pesanan...";
 
@@ -324,6 +336,8 @@ orderBtn.addEventListener("click", async () => {
       harga: selectedPrice,
 
       promo,
+
+      diskonQuantity: quantityDiscount,
 
       diskonPromo: promoDiscount,
 
@@ -390,6 +404,9 @@ Subtotal :
 Rp${selectedPrice.toLocaleString("id-ID")}
 
 Promo : ${promo || "-"}
+
+Diskon Quantity :
+Rp${quantityDiscount.toLocaleString("id-ID")}
 
 Diskon Promo :
 Rp${promoDiscount.toLocaleString("id-ID")}

@@ -1,4 +1,5 @@
 const data = JSON.parse(localStorage.getItem("lastOrder"));
+console.log("DATA INVOICE:", data);
 
 const invoiceCard = document.getElementById("invoiceCard");
 
@@ -110,10 +111,9 @@ Rp${data.diskonAffiliate.toLocaleString("id-ID")}
 TOTAL :
 Rp${data.harga.toLocaleString("id-ID")}
 
-Mohon dilakukan pengecekan pembayaran.`
+Mohon dilakukan pengecekan pembayaran.`,
     );
 
-    window.location.href =
-      `https://wa.me/6285885385659?text=${text}`;
+    window.location.href = `https://wa.me/6285885385659?text=${text}`;
   });
 }

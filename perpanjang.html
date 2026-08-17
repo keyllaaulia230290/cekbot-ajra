@@ -45,62 +45,92 @@ placeholder="Username Bot">
 
 <h3>Pilih Paket</h3>
 
-<div class="paket-grid">
+<div class="package-grid">
 
-<button
-class="paket"
-data-package="1 Bulan"
-data-price="20000">
+  <div
+    class="package"
+    data-package="1 Bulan"
+    data-price="10000"
+    data-quantity="1"
+  >
 
-📅
-<div>1 Bulan</div>
-<div>Rp20.000</div>
+    <h3>1 Bulan</h3>
 
-</button>
+    <b>Rp10.000 / bot</b>
 
-<button
-class="paket"
-data-package="3 Bulan"
-data-price="60000">
+    <span>Garansi RSS</span>
 
-📅
-<div>3 Bulan</div>
-<div>Rp60.000</div>
+    <div class="quantity-control">
 
-</button>
+      <button
+        type="button"
+        class="qty-btn minus"
+      >
+        −
+      </button>
 
-<button
-class="paket"
-data-package="6 Bulan"
-data-price="100000">
+      <span class="quantity">1</span>
 
-📅
-<div>6 Bulan</div>
-<div>Rp100.000</div>
+      <button
+        type="button"
+        class="qty-btn plus"
+      >
+        +
+      </button>
 
-</button>
+    </div>
 
-<button
-class="paket"
-data-package="1 Tahun"
-data-price="150000">
+    <div class="subtotal">
+      Rp10.000
+    </div>
 
-👑
-<div>1 Tahun</div>
-<div>Rp150.000</div>
+  </div>
 
-</button>
 
-<button
-class="paket permanent"
-data-package="Permanent"
-data-price="300000">
+  <div
+    class="package premium"
+    data-package="Permanent"
+    data-price="250000"
+    data-quantity="1"
+  >
 
-🔥
-<div>Permanent</div>
-<div>Rp300.000</div>
+    <div class="best">
+      PREMIUM
+    </div>
 
-</button>
+    <h3>Permanent</h3>
+
+    <b>Rp250.000</b>
+
+    <span>Permanent</span>
+
+    <div class="quantity-control">
+
+      <button
+        type="button"
+        class="qty-btn minus"
+        disabled
+      >
+        −
+      </button>
+
+      <span class="quantity">1</span>
+
+      <button
+        type="button"
+        class="qty-btn plus"
+        disabled
+      >
+        +
+      </button>
+
+    </div>
+
+    <div class="subtotal">
+      Rp250.000
+    </div>
+
+  </div>
 
 </div>
 
@@ -108,7 +138,8 @@ data-price="300000">
 
 <div class="payment-single">
 
-<div class="payment-card qris-card">
+<div class="payment-card qris-card"
+     data-payment="QRIS">
 
 <div class="payment-icon">
 📱
@@ -126,35 +157,85 @@ Semua E-Wallet & Mobile Banking
 
 </div>
 
-<h3>Ringkasan Pesanan</h3>
-
 <div class="invoice-card">
 
-<div class="invoice-row">
-<span>Paket</span>
-<span id="invoicePaket">
-Belum Dipilih
-</span>
-</div>
+  <div class="invoice-row">
+    <span>Paket</span>
 
-<div class="invoice-row">
-<span>Harga</span>
-<span id="invoiceHarga">
-Rp0
-</span>
-</div>
+    <span id="invoicePaket">
+      Belum Dipilih
+    </span>
+  </div>
 
-<div class="invoice-divider"></div>
 
-<div class="invoice-total">
+  <div class="invoice-row">
+    <span>Harga Satuan</span>
 
-<span>Total Bayar</span>
+    <span id="invoiceHargaSatuan">
+      Rp0
+    </span>
+  </div>
 
-<span id="totalHarga">
-Rp0
-</span>
 
-</div>
+  <div class="invoice-row">
+    <span>Quantity</span>
+
+    <span id="invoiceQuantity">
+      0
+    </span>
+  </div>
+
+
+  <div class="invoice-row">
+    <span>Subtotal</span>
+
+    <span id="invoiceSubtotal">
+      Rp0
+    </span>
+  </div>
+
+
+  <div class="invoice-row">
+    <span>Diskon Quantity</span>
+
+    <span id="quantityDiscount">
+      Rp0
+    </span>
+  </div>
+
+
+  <div class="invoice-row">
+    <span>Diskon Promo</span>
+
+    <span id="promoDiscount">
+      Rp0
+    </span>
+  </div>
+
+
+  <div class="invoice-row">
+    <span>Diskon Affiliate</span>
+
+    <span id="affiliateDiscount">
+      Rp0
+    </span>
+  </div>
+
+
+  <div class="invoice-divider"></div>
+
+
+  <div class="invoice-total">
+
+    <span>
+      Total Bayar
+    </span>
+
+    <span id="totalHarga">
+      Rp0
+    </span>
+
+  </div>
 
 </div>
 

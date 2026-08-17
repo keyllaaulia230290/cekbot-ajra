@@ -15,20 +15,106 @@ let selectedPrice = 0;
 let selectedPackage = "";
 let selectedPayment = "QRIS";
 
+let selectedQuantity = 1;
+
 packageCards.forEach((card) => {
-  card.addEventListener("click", () => {
+  card.addEventListener("click", (e) => {
+    // Jangan pilih paket kalau yang diklik tombol quantity
+    if (e.target.closest(".qty-btn")) {
+      return;
+    }
+
     packageCards.forEach((c) => {
       c.classList.remove("active");
     });
 
     card.classList.add("active");
 
-    selectedPrice = Number(card.dataset.price);
-
     selectedPackage = card.dataset.package;
+
+    selectedQuantity = Number(card.dataset.quantity || 1);
+
+    selectedPrice = Number(card.dataset.price) * selectedQuantity;
 
     updateTotal();
   });
+
+  const plusBtn = card.querySelector(".plus");
+
+  const minusBtn = card.querySelector(".minus");
+
+  const quantityElement = card.querySelector(".quantity");
+
+  const subtotalElement = card.querySelector(".subtotal");
+
+  if (plusBtn && minusBtn) {
+    plusBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+
+      let quantity = Number(card.dataset.quantity || 1);
+
+      quantity++;
+
+      card.dataset.quantity = quantity;
+
+      quantityElement.innerText = quantity;
+
+      const price = Number(card.dataset.price);
+
+      subtotalElement.innerText =
+        "Rp" + (price * quantity).toLocaleString("id-ID");
+
+      // Jadikan paket aktif
+      packageCards.forEach((c) => {
+        c.classList.remove("active");
+      });
+
+      card.classList.add("active");
+
+      selectedPackage = card.dataset.package;
+
+      selectedQuantity = quantity;
+
+      selectedPrice = price * quantity;
+
+      updateTotal();
+    });
+
+    minusBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+
+      let quantity = Number(card.dataset.quantity || 1);
+
+      if (quantity <= 1) {
+        return;
+      }
+
+      quantity--;
+
+      card.dataset.quantity = quantity;
+
+      quantityElement.innerText = quantity;
+
+      const price = Number(card.dataset.price);
+
+      subtotalElement.innerText =
+        "Rp" + (price * quantity).toLocaleString("id-ID");
+
+      packageCards.forEach((c) => {
+        c.classList.remove("active");
+      });
+
+      card.classList.add("active");
+
+      selectedPackage = card.dataset.package;
+
+      selectedQuantity = quantity;
+
+      selectedPrice = price * quantity;
+
+      updateTotal();
+    });
+  }
 });
 
 paymentCards.forEach((card) => {
@@ -228,6 +314,12 @@ orderBtn.addEventListener("click", async () => {
       whatsapp,
 
       paket: selectedPackage,
+
+      quantity: selectedQuantity,
+
+      hargaSatuan: Number(
+        document.querySelector(`.package.active`)?.dataset.price || 0,
+      ),
 
       harga: selectedPrice,
 

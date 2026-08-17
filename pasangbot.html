@@ -251,59 +251,78 @@
         </div>
       </section>
 
-      <section class="card">
-        <h2>💰 Pilih Paket</h2>
+<section class="card">
+  <h2>💰 Pilih Paket</h2>
 
-        <div class="package-grid">
-          <div class="package" data-package="1 Bulan" data-price="25000">
-            <h3>1 Bulan</h3>
+  <div class="package-grid">
 
-            <b> Rp25.000 </b>
+    <!-- 1 BULAN -->
+    <div
+      class="package"
+      data-package="1 Bulan"
+      data-price="10000"
+      data-quantity="1"
+    >
 
-            <span> Garansi RSS </span>
-          </div>
+      <h3>1 Bulan</h3>
 
-          <div class="package" data-package="3 Bulan" data-price="60000">
-            <h3>3 Bulan</h3>
+      <b>Rp10.000 / bulan</b>
 
-            <b> Rp60.000 </b>
+      <span>Garansi RSS</span>
 
-            <span> Garansi RSS </span>
-          </div>
+      <div class="quantity-box">
 
-          <div class="package" data-package="6 Bulan" data-price="100000">
-            <h3>6 Bulan</h3>
+        <button
+          type="button"
+          class="qty-btn minus"
+          data-type="minus"
+        >
+          −
+        </button>
 
-            <b> Rp100.000 </b>
+        <span class="quantity">
+          1
+        </span>
 
-            <span> Garansi RSS </span>
-          </div>
+        <button
+          type="button"
+          class="qty-btn plus"
+          data-type="plus"
+        >
+          +
+        </button>
 
-          <div class="package" data-package="1 Tahun" data-price="170000">
-            <div class="best">BEST</div>
+      </div>
 
-            <h3>1 Tahun</h3>
+      <div class="package-subtotal">
+        Total: <b class="subtotal">Rp10.000</b>
+      </div>
 
-            <b> Rp170.000 </b>
+    </div>
 
-            <span> Garansi RSS + Gems </span>
-          </div>
 
-          <div
-            class="package premium"
-            data-package="Permanent"
-            data-price="300000"
-          >
-            <div class="best">PREMIUM</div>
+    <!-- PERMANENT -->
+    <div
+      class="package premium"
+      data-package="Permanent"
+      data-price="250000"
+      data-quantity="1"
+    >
 
-            <h3>Permanent</h3>
+      <div class="best">
+        PREMIUM
+      </div>
 
-            <b> Rp300.000 </b>
+      <h3>Permanent</h3>
 
-            <span> Garansi RSS + Gems </span>
-          </div>
-        </div>
-      </section>
+      <b>Rp250.000</b>
+
+      <span>Garansi RSS + Gems</span>
+
+    </div>
+
+  </div>
+</section>
 
       <section class="card">
         <h2>💳 Metode Pembayaran</h2>

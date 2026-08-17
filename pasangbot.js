@@ -7,6 +7,8 @@ const referralCode = params.get("ref");
 let affiliateDiscount = 0;
 
 const packageCards = document.querySelectorAll(".package");
+const paymentCards = document.querySelectorAll(".payment-card");
+const promoInput = document.getElementById("promo");
 
 let selectedPrice = 0;
 let selectedPackage = "";
